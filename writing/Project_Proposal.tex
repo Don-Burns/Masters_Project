@@ -1,0 +1,266 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Formal Book Title Page
+% LaTeX Template
+% Version 2.0 (23/7/17)
+%
+% This template was downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Peter Wilson (herries.press@earthlink.net) with modifications by:
+% Vel (vel@latextemplates.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+% 
+% This template can be used in one of two ways:
+%
+% 1) Content can be added at the end of this file just before the \end{document}
+% to use this title page as the starting point for your document.
+%
+% 2) Alternatively, if you already have a document which you wish to add this
+% title page to, copy everything between the \begin{document} and
+% \end{document} and paste it where you would like the title page in your
+% document. You will then need to insert the packages and document 
+% configurations into your document carefully making sure you are not loading
+% the same package twice and that there are no clashes.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[a4paper, 11pt, oneside]{article} % A4 paper size, default 11pt font size and oneside for equal margins
+
+
+
+\usepackage[utf8]{inputenc} % Required for inputting international characters
+\usepackage[T1]{fontenc} % Output font encoding for international characters
+\usepackage{fouriernc} % Use the New Century Schoolbook font
+%my packages
+\usepackage[comma]{natbib}
+\usepackage{graphicx, epstopdf}
+\usepackage[mathlines]{lineno}
+\usepackage{helvet}
+\usepackage[margin=2cm]{geometry} % margins of 2cm
+\usepackage{pgfgantt} % for gantt chart
+\newcommand{\crest}{\includegraphics[width = 4cm, keepaspectratio]{./images/IC_Crest.eps}} % Imperial crest
+%%formating
+\linespread{1.5} %1.5 spacing
+\renewcommand{\familydefault}{\sfdefault} % set font to arial clone (helvet)
+
+
+
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\begin{document} 
+
+\begin{titlepage} % Suppresses headers and footers on the title page
+
+	\centering % Centre everything on the title page
+	
+	\scshape % Use small caps for all text on the title page
+	
+	\vspace*{\baselineskip} % White space at the top of the page
+	
+	%------------------------------------------------
+	%	Title
+	%------------------------------------------------
+	
+	\rule{\textwidth}{1.6pt}\vspace*{-\baselineskip}\vspace*{2pt} % Thick horizontal rule
+	\rule{\textwidth}{0.4pt} % Thin horizontal rule
+	
+	\vspace{0.75\baselineskip} % Whitespace above the title
+	
+	{\LARGE Fish Energy Investment in Growth Rate and Reproduction\\} % Title
+	
+	\vspace{0.75\baselineskip} % Whitespace below the title
+	
+	\rule{\textwidth}{0.4pt}\vspace*{-\baselineskip}\vspace{3.2pt} % Thin horizontal rule
+	\rule{\textwidth}{1.6pt} % Thick horizontal rule
+	
+	\vspace{2\baselineskip} % Whitespace after the title block
+	
+	%------------------------------------------------
+	%	Subtitle
+	%------------------------------------------------
+	
+	%SUBTITLE? % Subtitle or further description
+		Student:
+	
+	
+	\vspace{0.5\baselineskip} % Whitespace before 
+	
+	{\scshape\Large D\'onal Burns  \\} % supervisor name
+	
+	\vspace{0.5\baselineskip} % Whitespace below 
+	
+	\textit{CID: 01749638 \\ Imperial College London \\ Email: donal.burns@imperial.ac.uk} % affiliation and email
+	
+	\vspace*{2\baselineskip} % Whitespace under the subtitle
+	
+
+	
+	Supervisor:
+	
+	
+	\vspace{0.5\baselineskip} % Whitespace before 
+	
+	{\scshape\Large Samraat Pawar \\} % supervisor name
+	
+	\vspace{0.5\baselineskip} % Whitespace below 
+	
+	\textit{Imperial College London \\ Email: s.pawar@imperial.ac.uk} % affiliation and email
+	
+	\vspace{3cm} % Whitespace between 
+	
+	%------------------------------------------------
+	%	Publisher
+	%------------------------------------------------
+	
+	\crest % Uni logo
+	
+	\vspace{0.3\baselineskip} % Whitespace under the Uni logo
+	
+	Submitted 03/04/2020 % Publication Date
+	
+
+\end{titlepage}
+
+%---------------------------------------------------------------------------------------
+%%more formatting after preamble
+
+\linenumbers
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsubsection*{Keywords}
+allometry; fish; life history; metabolism; productivity;  reproduction
+
+\section*{Introduction}
+Recent results from \cite{Barneche2018} have shown that larger fish produce disproportionately more offspring than smaller fish, that is to say reproductive output is hyper-allometric.  In other words, a single 2kg fish will produce more offspring than two 1kg fish.  This project aims to use and build upon established models from the literature to try and understand how, from a metabolic standpoint, this phenomenon occurs.
+\section*{Methods}
+The project will use a lifetime reproductive output model \citep{Charnov2001} to infer how energy allocation to reproduction and growth changes throughout development \citep{West2001}.  These models will be implemented with some modification so as to make them more specific to fish. First, parameters will be optimised so as to maximise reproductive output, then the model will be fitted to real data in order to compare how "real world" growth compares to the purely theoretical case and what inferences can be made based on the results.
+\section*{Anticipated Outcomes}
+To quantify the energy allocation of fish throughout ontogeny, specifically with regard to growth and reproduction.
+\section*{Timeline}
+
+
+\begin{center}
+	\begin{table}[!h]
+
+		\vspace{2mm}
+		\begin{tabular}{ p{3cm}   p{10cm} } 
+			
+			April 3rd & Implement currently existing models \\ 
+			May 15th & Finish progressing the model / model ready to apply to data\\
+			May 15th & Introduction rough draft\\
+			May 22nd & Methods rough draft\\
+			June 26th & Finish results analysis\\
+			July 10th & Results rough draft\\
+			August 14th & Hand in full draft to Supervisor\\
+			August 27th & Submit thesis\\
+	
+		\end{tabular}
+	\end{table}	
+\end{center}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%Gant CHART%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\definecolor{barblue}{RGB}{153,204,254}
+\definecolor{groupblue}{RGB}{51,102,254}
+\definecolor{linkred}{RGB}{165,0,33}
+\definecolor{mainBar}{RGB}{255, 0, 0}
+\definecolor{subBar}{RGB}{0, 0, 255}
+\renewcommand\sfdefault{phv}
+\renewcommand\mddefault{mc}
+\renewcommand\bfdefault{bc}
+\setganttlinklabel{s-s}{START-TO-START}
+\setganttlinklabel{f-s}{FINISH-TO-START}
+\setganttlinklabel{f-f}{FINISH-TO-FINISH}
+\sffamily
+%% my chart
+\begin{ganttchart}[
+	canvas/.append style={fill=none, draw=black!5, line width=.75pt},
+	hgrid style/.style={draw=black!5, line width=.75pt},
+	vgrid={*1{draw=black!5, line width=.75pt}},
+	title/.style={draw=none, fill=none},
+	title label font=\bfseries\footnotesize,
+	title label node/.append style={below=7pt},
+	include title in canvas=false,
+	bar label font=\mdseries\small\color{black!70},
+	bar label node/.append style={left=2cm},
+	bar/.append style={draw=none, fill=subBar!63},% to change sub bar colour
+	bar incomplete/.append style={fill=barblue},
+	bar progress label font=\mdseries\footnotesize\color{black!70},
+	group incomplete/.append style={fill=groupblue},
+	group/.append style = {draw = none, fill = mainBar}, % to change main bar colour
+	group left shift=0,
+	group right shift=0,
+	group height=.5,
+	group peaks tip position=0,
+	group label node/.append style={left=.6cm},
+	group progress label font=\bfseries\small,
+	link/.style={-latex, line width=1.5pt, linkred},
+	link label font=\scriptsize\bfseries,
+	link label node/.append style={below left=-2pt and 0pt}
+	]{1}{22}
+	\gantttitle[
+	title label node/.append style={below left=7pt and -3pt}
+	]{WEEKS:\quad1}{1}
+	\gantttitlelist{2,...,22}{1} \\
+	\ganttgroup{Get Current Model Working}{1}{2} \\
+	\ganttgroup{Progress Model}{1}{6} \\
+	\ganttgroup{Results Analysis}{8}{12} \\
+
+	\ganttgroup{Writing}{1}{22}\\
+	\ganttbar{Introduction Draft}{1}{6} \\
+	\ganttbar{Methods Draft}{7}{7} \\
+	\ganttbar{Results Draft}{13}{14} \\
+	%\ganttbar{Write remaining sections}{15}{20} \\
+	\ganttbar{Discussion}{15}{20}\\
+	\ganttbar{Conclusion}{15}{20}\\
+	\ganttbar{Abstract}{15}{20}\\
+	\ganttbar{Submit Thesis}{22}{22} \\	
+
+\end{ganttchart}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Budget}
+\begin{center}
+	\begin{table}[!h]
+		
+		\vspace{2mm}
+		\begin{tabular}{ |p{4cm} |p{4cm} |  p{1.5cm}|  p{6.5cm}| } 
+			
+			\hline
+			Category & Item & Cost & Justification\\ 
+			\hline \hline
+		
+			Data Backup and storage& &  & Backup and storage of project data to ensure no lose of time or progress due to data loss\\
+			\hline
+			&1TB external Hard drive & £62 &\\
+			\hline
+			Travel & & & Travel to the UK once travel restrictions are lifted\\
+			\hline
+			&Flight & £100&\\
+			\hline
+
+			
+
+		\end{tabular}
+	\end{table}	
+\end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\renewcommand\bibname{References} % set bib Title
+\bibliographystyle{agsm}
+\bibliography{./Masters_Thesis.bib}
+
+
+
+\end{document}
