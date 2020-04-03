@@ -50,6 +50,8 @@
 \linespread{1.5} %1.5 spacing
 \renewcommand{\familydefault}{\sfdefault} % set font to arial clone (helvet)
 
+\usepackage[compact]{titlesec} % reduce spacing bewteen section titles
+
 
 
 
@@ -141,8 +143,17 @@
 allometry; life history; metabolism; productivity;  reproduction
 
 \section*{Introduction}
-Recent results from \cite{Barneche2018} have shown that larger fish produce disproportionately more offspring than smaller fish, that is to say reproductive output is hyper-allometric.  In other words, a single 2kg fish will produce more offspring than two 1kg fish.  Currently, many models make the assumption that reproduction is isometric with mass, for example \cite{Charnov2001} and \cite{West2001}.  Additionally, it has been shown that organism resource interactions can also show an allometric relationship based on the dimensionality of interactions, where 3D interactions, such as those in many fish, also showed hyper-allometric scaling \citep{Pawar2012}. 
-This project aims to use and build upon these reproductive and growth models to understand how, from a metabolic standpoint, this phenomenon occurs.
+Recent results from \cite{Barneche2018} have shown that larger fish produce disproportionately more offspring than smaller fish, that is to say reproductive output is hyper-allometric.  In other words, a single 2kg fish produces more offspring than two 1kg fish.  Currently, many models make the assumption that reproduction is isometric with mass, for example \cite{Charnov2001} and \cite{West2001}.  Additionally, it has been shown that organism resource interactions can also show an allometric relationship based on the dimensionality of interactions, where 3D interactions, such as those in many fish, also showed hyper-allometric scaling \citep{Pawar2012}. 
+%This project aims to use and build upon these reproductive and growth models to understand how, from a metabolic standpoint, this phenomenon occurs.
+\newline
+This project aims to answer the following questions:
+\newline
+Can allometry in reproduction be incorporated into existing growth rate models which assume an isometric relationship between reproduction and mass? Also, does incorporating this improve accuracy of the model's predictions?
+\newline
+Does resource interaction dimensionality indicate allometry in reproductive output?
+\newline
+Can a difference in energy investment towards reproduction be seen between organims with different reproductive strategies, for example r and k selected species?
+
 \section*{Methods}
 The project will use a lifetime reproductive output model to infer how energy allocation to reproduction and growth changes throughout development.  Some models will be implemented with some modification so as to take allometric reproduction into account \citep{Charnov2001, West2001}.  Others which already incorporate allometric reproductive output, such as \cite{Burger2019}, will be compared to these modified models for comparison. First, parameters will be optimised so as to maximise reproductive output, then the model will be fitted to data in order to compare how "real world" growth compares to the purely theoretical case and what inferences can be made based on the results.
 \newline
@@ -151,9 +162,10 @@ The results will then be used to compare the allometry of reproduction with the 
 \section*{Anticipated Outcomes}
 \begin{itemize}
 	\item Design of a model that can describe the growth of organisms, regardless of whether reproduction is allometric or isometric.
-	\item To quantify the energy allocation of an organism throughout ontogeny, specifically with regard to growth and reproduction.
-	\item Determine whether dimensionality of resource interaction may be an indicator of the hypo-  or hyper-allometry in reproduction.
+	\item  To quantify the energy allocation of an organism throughout ontogeny, specifically with regard to growth and reproduction.
+	\item  Determine whether dimensionality of resource interaction may be an indicator of the hypo-  or hyper-allometry in reproduction.
 \end{itemize}
+
 
 \section*{Timeline}
 
@@ -265,7 +277,7 @@ The results will then be used to compare the allometry of reproduction with the 
 \end{center}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\newpage	
 \renewcommand\bibname{References} % set bib Title
 \bibliographystyle{agsm}
 \bibliography{./Masters_Thesis.bib}
