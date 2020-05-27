@@ -1,0 +1,109 @@
+%% The report to gather all sections into, set formatting and compile.
+
+\documentclass[a4paper]{article}
+
+%%%%%%%%%% Packages %%%%%%%%%%
+
+\usepackage{epstopdf} % to allow use of crest in title page
+\usepackage{graphicx}
+\usepackage[mathlines]{lineno}%line numbers
+\usepackage{natbib}
+\usepackage{hyperref} % for URLs
+
+%%%%%%%%%% Custome Commands %%%%%%%%%%
+\newcommand{\crest}{\includegraphics[width = 4cm, keepaspectratio]{../images/IC_Crest.eps}} % Imperial crest
+\newcommand\wordcount{\input{Report.sum}} % to include word count 
+
+%%%%%%%%%% Formatting %%%%%%%%%%
+\usepackage[margin=2cm]{geometry} % margins of 2cm
+\linespread{1.5} %1.5 spacing
+%\renewcommand{\familydefault}{\sfdefault} % set font to arial clone (helvet)
+
+\usepackage[compact]{titlesec} % reduce spacing bewteen section titles
+%%%%%%%%%% Document %%%%%%%%%%
+\begin{document}
+	%%%%%%%%%% Title Page %%%%%%%%%%
+	\include{title_page}
+
+	%%%%%%%%%% Abstract %%%%%%%%%%
+	\section*{Abstract}
+	\linenumbers
+	some text
+	
+	some text
+	
+	some text
+	
+	some text
+	
+	some text
+	
+	some text
+	
+	
+	
+	\nolinenumbers
+	%%%%%%%%%% Acknowledgements %%%%%%%%%%
+	\include{Acknowledgements}
+	
+	%%%%%%%%%% Table of Contents %%%%%%%%%%
+	\tableofcontents
+	\newpage
+	%% start line numbering
+
+
+	%%%%%%%%%% Introduction %%%%%%%%%%
+\section{Introduction}
+	\linenumbers
+	What is an OGM and ontogenic growth?
+	
+	An ontogenetic model or OGM is a model which describes the development of an organism.  Within a metabolic framework this describes how an organism's assess to and and alocation of energy changes throughout its lifetime.
+	
+	explain west's model
+	
+	explain terms 
+	
+	why is `a` resting metabolic rate?
+	
+	explain charnov's contribution
+	
+	- graph with generic example of the plot for illustration purposes
+	
+	explain what I am adding to `cm` and why --> maybe leave for the methods?
+	
+	talk about barneche 2018
+	
+	raises question of scaling elsewhere 
+	
+	talk about samraats work and how I plan to use it
+	
+	the goal of my paper
+	
+	\nolinenumbers
+	%%%%%%%%%% Methods %%%%%%%%%%
+\section{Methods}
+	\linenumbers
+	some text
+	\nolinenumbers
+	%%%%%%%%%% Results %%%%%%%%%%
+\section{Results}
+	\linenumbers
+	some text
+	\nolinenumbers
+	%%%%%%%%%% Discussion %%%%%%%%%%
+\section{Discussion}
+	\linenumbers
+	some text
+	\nolinenumbers
+	%%%%%%%%%% Conclusion %%%%%%%%%%
+\section{Conclusion (not part of the scheme?)}
+	\linenumbers
+	some text
+	\nolinenumbers
+	%%%%%%%%%% Bibliography %%%%%%%%%%
+
+	\renewcommand\bibname{References} % set bib Title
+	\bibliographystyle{agsm}
+	\bibliography{./Masters_Thesis.bib}
+
+\end{document}
