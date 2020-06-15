@@ -31,7 +31,7 @@ def hou_mt(m0, M, Em, B0):
         int: mt - the mass of an organism at time t
     """
 
-    return ((1 - (1 - (m0/M)**0.25) * exp(-B0 / (4 * Em * (M**0.25))))**4) * M
+    return ((1 - (1 - ((m0/M)**0.25)) * exp(-B0 / (4 * Em * (M**0.25))))**4) * M
 
 def hou_AS(f, Ec, Em, B0, mt, M):
     """
@@ -48,7 +48,7 @@ def hou_AS(f, Ec, Em, B0, mt, M):
     Returns:
         int: Assimilation of organism of given size at time t
     """
-    return ((f + (Ec / Em)) * B0 * (mt**0.75) - (Ec / Em) * B0 * (M**-0.25) * mt)
+    return (((f + (Ec / Em)) * B0 * (mt**0.75)) - ((Ec / Em) * B0 * (M**-0.25) * mt))
 
 def hou_dmdt(m0, t, beta, f, Ec, Em, B0, B0FR,  M):
     """[summary]
@@ -69,7 +69,7 @@ def hou_dmdt(m0, t, beta, f, Ec, Em, B0, B0FR,  M):
     mt = hou_mt(m0, M, Em, B0)
     mFR = m0
     beta_AS = beta * hou_AS(f, Ec, Em, B0, mt, M)
-    B_totFR = f * (B0*mFR**0.75)
+    B_totFR = f * (B0*(mFR**0.75))
 
     dmdt = (beta_AS - B_totFR) / Ec
 
@@ -139,17 +139,76 @@ def plot_hou(m0, time, params):
 
 ## Supply Model ##
 def Fun_Resp(a, R, h):
+    """[summary]
+
+    Args:
+        a ([type]): [description]
+        R ([type]): [description]
+        h ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """    
     f = (a*R) / (1 + a*h*R)
     return f
 
 def dmdt(m, t, epsilon, L_B, L_R, a, R, h):
-# put params as a dict?
+    """[summary]
 
-    gain = epsilon * Fun_Resp
+    Args:
+        m ([type]): [description]
+        t ([type]): [description]
+        epsilon ([type]): [description]
+        L_B ([type]): [description]
+        L_R ([type]): [description]
+        a ([type]): [description]
+        R ([type]): [description]
+        h ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    # put params as a dict?
+
+    gain = epsilon * Fun_Resp(a, R, h)
     loss = L_B + L_R
-    dmdt = (gain - loss) * m
-
+    dmdt = ((gain * m**-0.25) - loss) * m # `gain` is times m**0.75
+    
     return dmdt
+
+def dmdt_integrate(m0, time, params):
+    """[summary]
+
+    Returns:
+        [type]: [description]
+    """    
+    t = arange(0, time, 1)   
+    arg = (params["epsilon"], params["L_B"], params["L_R"], params["a"], params["R"], params["h"])
+
+    mass = odeint(dmdt, m0, t, args=arg)
+
+    return mass
+
+def plot_supply(m0, time, params):
+    """[summary]
+
+    Args:
+        m0 ([type]): [description]
+        time ([type]): [description]
+        params ([type]): [description]
+    """
+
+    m = dmdt_integrate(m0, time, params)[:,0] #change dimensions from col to row
+    t = arange(0, time, 1)
+
+    plt.figure()
+    plt.plot(t, m, label="Mass")
+    plt.show()
+    return m
+
+
+
+
 ###### Classes ######
 
 
