@@ -133,9 +133,61 @@ def plot_hou(m0, time, params):
 
     plt.figure()
     plt.plot(t, m, label="Mass")
+    plt.xlabel("Time")
+    plt.ylabel("Mass")
+    plt.legend()
     plt.show()
 
-    return 0 
+    return m
+
+
+def hou_simple(m, t, B0, Em, M):
+    """
+    Function for calculating growth based on Eq 1.2 from Hou et al 2011.
+
+    Args:
+        m ([type]): [description]
+        t ([type]): [description]
+        B0 ([type]): [description]
+        Em ([type]): [description]
+        M ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+    Bm = B0 * M**-0.25
+
+    dmdt = ((B0 * m**0.75) - (Bm * m)) / Em
+
+    return dmdt
+
+def hou_integrate_simple(m0, time, params):
+
+    B0 = params["B0"]
+    Em = params["Em"]
+    M = params["M"]
+
+    t = arange(0, time, 1)
+
+    mass =  odeint(hou_simple, m0, t, args=(B0, Em, M))
+
+    return mass
+
+def plot_hou_simple(m0, time, params):
+
+
+    m = hou_integrate_simple(m0, time, params)[:,0] #change dimensions from col to row
+    t = arange(0, time, 1)
+
+    plt.figure()
+    plt.plot(t, m, label="Mass")
+    plt.xlabel("Time")
+    plt.ylabel("Mass")
+    plt.legend()
+    plt.show()
+    return m
+
+
 
 ## Supply Model ##
 def Fun_Resp(a, R, h):
@@ -171,7 +223,7 @@ def dmdt(m, t, epsilon, L_B, L_R, a, R, h):
     # put params as a dict?
 
     gain = epsilon * Fun_Resp(a, R, h)
-    loss = L_B + L_R
+    loss = (L_B * m**-0.25 ) + (L_R)
     dmdt = ((gain * m**-0.25) - loss) * m # `gain` is times m**0.75
     
     return dmdt
@@ -203,7 +255,11 @@ def plot_supply(m0, time, params):
 
     plt.figure()
     plt.plot(t, m, label="Mass")
+    plt.xlabel("Time")
+    plt.ylabel("Mass")
+    plt.legend(loc="upper left")
     plt.show()
+    
     return m
 
 
