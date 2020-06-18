@@ -7,10 +7,15 @@
 
 
 ###### Imports ######
-from scipy import exp as exp
-from scipy.integrate import odeint as odeint
 from scipy import arange as arange
 
+## maths functions
+from scipy.integrate import odeint as odeint
+from scipy import exp as exp
+from scipy import sin as sin
+from scipy import pi as pi
+
+## plotting
 import matplotlib.pyplot as plt
 
 ###### Functions ######
@@ -190,64 +195,78 @@ def plot_hou_simple(m0, time, params):
 
 
 ## Supply Model ##
-def Fun_Resp(a, R, h):
+def Fun_Resp(m, a0, R, h):
     """[summary]
 
     Args:
-        a ([type]): [description]
+        m ([type]): mass of indicidual
+        a0 ([type]): mass dependent search rate 
         R ([type]): [description]
         h ([type]): [description]
 
     Returns:
         [type]: [description]
     """    
-    f = (a*R) / (1 + a*h*R)
+    f = ((a0 * m**0.75)*R) / (1 + (a0 * m**0.75)*h*R)
     return f
 
-def dmdt(m, t, epsilon, L_B, L_R, a, R, h):
+def dmdt(m, t, epsilon, L_B, L_R, a0, R, h, amp, period):
     """[summary]
 
     Args:
-        m ([type]): [description]
-        t ([type]): [description]
-        epsilon ([type]): [description]
-        L_B ([type]): [description]
-        L_R ([type]): [description]
-        a ([type]): [description]
-        R ([type]): [description]
-        h ([type]): [description]
+        m (float): [description]
+        t (int): [description]
+        epsilon (float): [description]
+        L_B (float): [description]
+        L_R (float): [description]
+        a (float): [description]
+        R (float): The expected median value for resource density
+        amp (float): [description]
+        period (int): [description]
 
     Returns:
-        [type]: [description]
+        float: change in mass (dm/dt) at time t
     """
     # put params as a dict?
 
-    gain = epsilon * Fun_Resp(a, R, h)
-    loss = (L_B * m**-0.25 ) + (L_R)
-    dmdt = ((gain * m**-0.25) - loss) * m # `gain` is times m**0.75
+    R_t = Rt(t, amp, period, centre=R)
+
+    gain = epsilon * Fun_Resp(m, a0, R_t, h)
+    loss = (L_B  ) + (L_R)
+    dmdt = ((gain) - loss) * m # `gain` is times m**0.75
     
     return dmdt
 
 def dmdt_integrate(m0, time, params):
-    """[summary]
+    """
+    integrates dmdt to return a growth curve.
+
+    Args:
+        m0 (float): Initial mass of individual
+        time (int): Time
+        params (dict): see `dmdt` function for needed names of parameters
 
     Returns:
         [type]: [description]
     """    
     t = arange(0, time, 1)   
-    arg = (params["epsilon"], params["L_B"], params["L_R"], params["a"], params["R"], params["h"])
+    arg = (params["epsilon"], params["L_B"], params["L_R"], params["a0"], params["R"], params["h"], params["amp"], params["period"])
 
     mass = odeint(dmdt, m0, t, args=arg)
 
     return mass
 
 def plot_supply(m0, time, params):
-    """[summary]
+    """
+    Plots the growth curve of a bottom up supply based model in the form:
+    dmdt = [gain - loss]m ;  where gain is modeled as a functional response 
+    scaled by an efficiency constant and loss is metabolic and reproductive 
+    costs.
 
     Args:
-        m0 ([type]): [description]
-        time ([type]): [description]
-        params ([type]): [description]
+        m0 (float): Initial mass of individual
+        time (int): Time
+        params (dict): see `dmdt` function for needed names of parameters
     """
 
     m = dmdt_integrate(m0, time, params)[:,0] #change dimensions from col to row
@@ -262,6 +281,24 @@ def plot_supply(m0, time, params):
     
     return m
 
+def Rt(t, amp, period, centre):
+    """
+    To simulate the fluctuation of resource density in a functional response 
+    through time according to a sine wave.
+
+    Args:
+        t (int): time passed (is converted to radians in function)
+        amp (float): The amplitude of the sin wave
+        period (int): Period of the wave in time
+        centre (float): The value around which resource density fluctuates
+
+    Returns:
+        float: Resource density
+    """   
+
+    x = t * (2 * pi / period) 
+
+    return amp * sin(x) + centre
 
 
 
