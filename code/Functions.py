@@ -195,22 +195,24 @@ def plot_hou_simple(m0, time, params):
 
 
 ## Supply Model ##
-def Fun_Resp(m, a0, R, h):
+def Fun_Resp(m, R, h):
     """[summary]
 
     Args:
-        m ([type]): mass of indicidual
-        a0 ([type]): mass dependent search rate 
+        m ([type]): mass of individual
+        ## a0 ([type]): mass dependent search rate 
         R ([type]): [description]
         h ([type]): [description]
 
     Returns:
         [type]: [description]
     """    
-    f = ((a0 * m**0.75)*R) / (1 + (a0 * m**0.75)*h*R)
+    a = mass_dep_search(m)  # find mass dependent search rate
+
+    f = (a *R) / (1 + a*h*R)
     return f
 
-def dmdt(m, t, epsilon, L_B, L_R, a0, R, h, amp, period):
+def dmdt(m, t, epsilon, L_B, L_R, R, h, amp, period):
     """[summary]
 
     Args:
@@ -219,7 +221,7 @@ def dmdt(m, t, epsilon, L_B, L_R, a0, R, h, amp, period):
         epsilon (float): [description]
         L_B (float): [description]
         L_R (float): [description]
-        a (float): [description]
+        ## a (float): [description]
         R (float): The expected median value for resource density
         amp (float): [description]
         period (int): [description]
@@ -227,13 +229,11 @@ def dmdt(m, t, epsilon, L_B, L_R, a0, R, h, amp, period):
     Returns:
         float: change in mass (dm/dt) at time t
     """
-    # put params as a dict?
 
     R_t = Rt(t, amp, period, centre=R)
-
-    gain = epsilon * Fun_Resp(m, a0, R_t, h)
+    gain = epsilon * Fun_Resp(m, R_t, h)
     loss = (L_B  ) + (L_R)
-    dmdt = ((gain) - loss) * m # `gain` is times m**0.75
+    dmdt = ((gain) - loss) * m 
     
     return dmdt
 
@@ -250,7 +250,7 @@ def dmdt_integrate(m0, time, params):
         [type]: [description]
     """    
     t = arange(0, time, 1)   
-    arg = (params["epsilon"], params["L_B"], params["L_R"], params["a0"], params["R"], params["h"], params["amp"], params["period"])
+    arg = (params["epsilon"], params["L_B"], params["L_R"], params["R"], params["h"], params["amp"], params["period"])
 
     mass = odeint(dmdt, m0, t, args=arg)
 
@@ -300,7 +300,25 @@ def Rt(t, amp, period, centre):
 
     return amp * sin(x) + centre
 
+def mass_dep_search(m, dimensionality = "3D"):
+    """
+    Calculates mass specific search rate in a functional response as derived in Pawar et al 2012.
 
+    Args:
+        m (float): [description]
+        dimensionality (str, optional): Dimensionality of the functional response. Defaults to "3D".
+
+    Returns:
+        float: Mass specific search rate (a)
+    """
+    if dimensionality == "3D":
+        a0 = 10**-1.77
+        a = a0 * (m**0.75)
+    if dimensionality == "2D":
+        a0 = 10**-3.08
+        a = a0 * (m**0.75)
+
+    return a
 
 ###### Classes ######
 
