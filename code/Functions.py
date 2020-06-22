@@ -230,7 +230,7 @@ def dmdt(m, t, epsilon, L_B, L_R, R, h, amp, period):
         float: change in mass (dm/dt) at time t
     """
 
-    R_t = Rt(t, amp, period, centre=R)
+    R_t = Rt(t, amp, R, period)
     gain = epsilon * Fun_Resp(m, R_t, h)
     loss = (L_B  ) + (L_R)
     dmdt = ((gain) - loss) * m 
@@ -281,7 +281,8 @@ def plot_supply(m0, time, params):
     
     return m
 
-def Rt(t, amp, period, centre):
+def Rt(t, amp, centre, period = 365):
+
     """
     To simulate the fluctuation of resource density in a functional response 
     through time according to a sine wave.
@@ -289,8 +290,9 @@ def Rt(t, amp, period, centre):
     Args:
         t (int): time passed (is converted to radians in function)
         amp (float): The amplitude of the sin wave
-        period (int): Period of the wave in time
-        centre (float): The value around which resource density fluctuates
+        centre (float): The value around which resource density fluctuates.
+        period (int): Period of the wave in time. Defaults to 365
+
 
     Returns:
         float: Resource density
@@ -298,7 +300,7 @@ def Rt(t, amp, period, centre):
 
     x = t * (2 * pi / period) 
 
-    return amp * sin(x) + centre
+    return (amp * sin(x)) + centre
 
 def mass_dep_search(m, dimensionality = "3D"):
     """
