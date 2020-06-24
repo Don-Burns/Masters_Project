@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 
 def hou_mt(m0, M, Em, B0):
     """
-    to calculate m(t) to feed into equation 1.5 from hou et al 2011 / the ___ function.
+    to calculate m(t) to feed into equation 1.5 from hou et al 2011 / the `hou-dmdt` function.
 
     Args:
         m0 (int): initial mass of organism
@@ -195,44 +195,58 @@ def plot_hou_simple(m0, time, params):
 
 
 ## Supply Model ##
-def Fun_Resp(m, R, h):
-    """[summary]
+def Fun_Resp(m, R, dimensionality = "3D"):
+    """
+    Calculates the functional response of an organism dependent on mass.
 
     Args:
-        m ([type]): mass of individual
+        m (float): Mass of individual
         ## a0 ([type]): mass dependent search rate 
-        R ([type]): [description]
-        h ([type]): [description]
+        R (float): Resource density
+        ## h ([type]): [description]
+        dimensionality (str): Used to determine how  serach rate and handling rate are calculated. See functions for details.
 
     Returns:
-        [type]: [description]
+        [float]: consumption rate of the organism
     """    
-    a = mass_dep_search(m)  # find mass dependent search rate
-
+    a = am(m)  # find mass dependent search rate
+    h = hm(m) # find mass dependent handling time
+    
     f = (a *R) / (1 + a*h*R)
     return f
 
-def dmdt(m, t, epsilon, L_B, L_R, R, h, amp, period):
+def dmdt(m, t, alpha, epsilon, M, mc, L_R, R, amp, period, dimensionality = "3D"):
     """[summary]
 
     Args:
-        m (float): [description]
-        t (int): [description]
-        epsilon (float): [description]
-        L_B (float): [description]
+        m (float): Mass of individual
+        t (int): time
+        alpha (int): maturation time
+        epsilon (float): Efficiency term
+        M (float): Assymptotic mass
+        mc (float): mass of a cell
         L_R (float): [description]
         ## a (float): [description]
         R (float): The expected median value for resource density
         amp (float): [description]
         period (int): [description]
+        dimensionality (str): See `Func_Resp`
+
 
     Returns:
         float: change in mass (dm/dt) at time t
     """
 
+    # check if individual is at/past maturation
+    if t < alpha:
+        L_R = 0
+
     R_t = Rt(t, amp, R, period)
-    gain = epsilon * Fun_Resp(m, R_t, h)
-    loss = (L_B  ) + (L_R)
+    gain = epsilon * Fun_Resp(m, R_t, dimensionality)
+
+    L_B = Bm(m, M, mc)
+
+    loss = (L_B) + (L_R)
     dmdt = ((gain) - loss) * m 
     
     return dmdt
@@ -250,7 +264,7 @@ def dmdt_integrate(m0, time, params):
         [type]: [description]
     """    
     t = arange(0, time, 1)   
-    arg = (params["epsilon"], params["L_B"], params["L_R"], params["R"], params["h"], params["amp"], params["period"])
+    arg = (params["alpha"], params["epsilon"], params["M"], params["mc"], params["L_R"], params["R"], params["amp"], params["period"], params["dimensionality"])
 
     mass = odeint(dmdt, m0, t, args=arg)
 
@@ -302,12 +316,12 @@ def Rt(t, amp, centre, period = 365):
 
     return (amp * sin(x)) + centre
 
-def mass_dep_search(m, dimensionality = "3D"):
+def am(m, dimensionality = "3D"):
     """
     Calculates mass specific search rate in a functional response as derived in Pawar et al 2012.
 
     Args:
-        m (float): [description]
+        m (float): Mass of individual
         dimensionality (str, optional): Dimensionality of the functional response. Defaults to "3D".
 
     Returns:
@@ -315,12 +329,53 @@ def mass_dep_search(m, dimensionality = "3D"):
     """
     if dimensionality == "3D":
         a0 = 10**-1.77
-        a = a0 * (m**0.75)
+
+        return a0 * (m**0.75) #abundant resources/
+        # return a0 * (m**1.05)
+
     if dimensionality == "2D":
         a0 = 10**-3.08
-        a = a0 * (m**0.75)
 
-    return a
+        return a0 * (m**0.75)
+        # return a0 * (m**0.68)
+
+def hm(m, dimensionality = "3D"):
+    """
+    Calculates mass specific handling time in a functional response as derived in Pawar et al 2012.
+
+    Args:
+        m (float): Mass of individual
+        dimensionality (str, optional): Dimensionality of the functional response. Defaults to "3D".
+
+    Returns:
+        float: Mass specific search rate (a)
+    """
+
+    if dimensionality == "3D":
+        tk0 = 10**3.95
+        return tk0 * (m**-0.75)
+        # return tk0 * (m**-1.1)
+    if dimensionality == "2D":
+        tk0 = 10**3.04
+        return tk0 * (m**-0.75)
+
+        # return tk0 * (m**-1.02)
+        
+def Bm (m, M, mc):
+    """
+    Calculated mass specific metabolic cost
+
+    Args:
+        m (float): Mass of individual
+        M (float): Asymptotic mass
+        mc (float): Mass of a single cell
+
+    Returns:
+        [float]: Mass specific metabolic cost
+    """    
+
+    return (m * (M**-0.25)) / mc
+    
 
 ###### Classes ######
 
