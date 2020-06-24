@@ -7,13 +7,15 @@
 
 
 ###### Imports ######
-from scipy import arange as arange
+from numpy import arange as arange
 
 ## maths functions
 from scipy.integrate import odeint as odeint
-from scipy import exp as exp
-from scipy import sin as sin
-from scipy import pi as pi
+from numpy import exp as exp
+from numpy import sin as sin
+from numpy import pi as pi
+from numpy import log10 as log10
+
 
 ## plotting
 import matplotlib.pyplot as plt
@@ -328,16 +330,18 @@ def am(m, dimensionality = "3D"):
         float: Mass specific search rate (a)
     """
     if dimensionality == "3D":
-        a0 = 10**-1.77
-
-        return a0 * (m**0.75) #abundant resources/
-        # return a0 * (m**1.05)
+        a0 = -1.77
+        exp = 0.75 # abundant resources
+        # exp = 1.05 # scarce resoruces
+        logged = (exp*log10(m)) + a0
+        return 10**logged # unlog data #abundant resources/
 
     if dimensionality == "2D":
-        a0 = 10**-3.08
-
-        return a0 * (m**0.75)
-        # return a0 * (m**0.68)
+        a0 = -3.08
+        exp = 0.75 # abundant resources
+        # exp = 0.68 # scarce resoruces
+        logged = (exp*log10(m)) + a0
+        return 10**logged # unlog data #abundant resources/
 
 def hm(m, dimensionality = "3D"):
     """
@@ -352,12 +356,19 @@ def hm(m, dimensionality = "3D"):
     """
 
     if dimensionality == "3D":
-        tk0 = 10**3.95
-        return tk0 * (m**-0.75)
-        # return tk0 * (m**-1.1)
+        tk0 = 3.95
+        exp = 0.75 # abundant resources
+        # exp = 1.05 # scarce resoruces
+        logged = (exp*log10(m)) + tk0
+        return 10**logged # unlog data #abundant resources/
+
     if dimensionality == "2D":
-        tk0 = 10**3.04
-        return tk0 * (m**-0.75)
+        tk0 = 3.04
+        exp = 0.75 # abundant resources
+        # exp = 1.05 # scarce resoruces
+        logged = (exp*log10(m)) + tk0
+        return 10**logged # unlog data #abundant resources/
+
 
         # return tk0 * (m**-1.02)
         
