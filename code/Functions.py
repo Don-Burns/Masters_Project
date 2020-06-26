@@ -330,14 +330,14 @@ def am(m, dimensionality = "3D"):
         float: Mass specific search rate (a)
     """
     if dimensionality == "3D":
-        a0 = -1.77
+        a0 = -1.77  # this is log_10(a0) in reality
         exp = 0.75 # abundant resources
         # exp = 1.05 # scarce resoruces
         logged = (exp*log10(m)) + a0
         return 10**logged # unlog data #abundant resources/
 
     if dimensionality == "2D":
-        a0 = -3.08
+        a0 = -3.08 # this is log_10(a0) in reality
         exp = 0.75 # abundant resources
         # exp = 0.68 # scarce resoruces
         logged = (exp*log10(m)) + a0
@@ -356,16 +356,16 @@ def hm(m, dimensionality = "3D"):
     """
 
     if dimensionality == "3D":
-        tk0 = 3.95
-        exp = 0.75 # abundant resources
-        # exp = 1.05 # scarce resoruces
+        tk0 = 3.95  # this is log_10(tk0) in reality
+        # exp = -0.75 # abundant resources
+        exp = -1.1 # scarce resoruces
         logged = (exp*log10(m)) + tk0
         return 10**logged # unlog data #abundant resources/
 
     if dimensionality == "2D":
-        tk0 = 3.04
-        exp = 0.75 # abundant resources
-        # exp = 1.05 # scarce resoruces
+        tk0 = 3.04 # this is log_10(tk0) in reality
+        # exp = -0.75 # abundant resources
+        exp = -1.02 # scarce resoruces
         logged = (exp*log10(m)) + tk0
         return 10**logged # unlog data #abundant resources/
 
