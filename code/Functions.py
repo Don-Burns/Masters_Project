@@ -197,6 +197,78 @@ def plot_hou_simple(m0, time, params):
 
 
 ## Supply Model ##
+def am(m, dimensionality = "3D"):
+    """
+    Calculates mass specific search rate in a functional response as derived in Pawar et al 2012.
+
+    Args:
+        m (float): Mass of individual
+        dimensionality (str, optional): Dimensionality of the functional response. Defaults to "3D".
+
+    Returns:
+        float: Mass specific search rate (a)
+    """
+    if dimensionality == "3D":
+        a0 = -1.77  # this is log_10(a0) in reality
+        gamma = 0.75 # abundant resources
+        # gamma = 1.05 # scarce resources
+        logged = (gamma*log10(m)) + a0
+        return 10**logged # unlog data #abundant resources/
+
+    if dimensionality == "2D":
+        a0 = -3.08 # this is log_10(a0) in reality
+        gamma = 0.75 # abundant resources
+        # gamma = 0.68 # scarce resources
+        logged = (gamma*log10(m)) + a0
+        return 10**logged # unlog data #abundant resources/
+
+def hm(m, dimensionality = "3D"):
+    """
+    Calculates mass specific handling time in a functional response as derived in Pawar et al 2012.
+
+    Args:
+        m (float): Mass of individual
+        dimensionality (str, optional): Dimensionality of the functional response. Defaults to "3D".
+
+    Returns:
+        float: Mass specific handling time (h)
+    """
+
+    if dimensionality == "3D":
+        tk0 = 3.04  # this is log_10(tk0) in reality
+        beta = 0.75 # abundant resources
+        # beta = -1.1 # scarce resoruces
+        logged = (-beta*log10(m)) + tk0
+        return 10**logged # unlog data #abundant resources/
+
+    if dimensionality == "2D":
+        tk0 = 3.95 # this is log_10(tk0) in reality
+        beta = 0.75 # abundant resources
+        # beta = -1.02 # scarce resoruces
+        logged = (-beta*log10(m)) + tk0
+        return 10**logged # unlog data #abundant resources/
+
+def Rt(t, amp, centre, period = 365):
+    
+    """
+    To simulate the fluctuation of resource density in a functional response 
+    through time according to a sine wave.
+
+    Args:
+        t (int): time passed (is converted to radians in function)
+        amp (float): The amplitude of the sin wave
+        centre (float): The value around which resource density fluctuates.
+        period (int): Period of the wave in time. Defaults to 365
+
+
+    Returns:
+        float: Resource density
+    """   
+
+    x = t * (2 * pi / period) 
+
+    return (amp * sin(x)) + centre
+
 def Fun_Resp(m, R, dimensionality = "3D"):
     """
     Calculates the functional response of an organism dependent on mass.
@@ -217,7 +289,24 @@ def Fun_Resp(m, R, dimensionality = "3D"):
     f = (a *R) / (1 + a*h*R)
     return f
 
-def dmdt(m, t, alpha, epsilon, M, mc, L_R, R, amp, period, dimensionality = "3D"):
+def Bm (m, proportion = 0.1, dimensionality = "3D"):
+    """
+    Calculated mass specific metabolic cost based on some percentage 
+    of effective intake rate i.e. search rate
+
+    Args:
+        m (float): Mass of individual
+        proportion (float): The proportion of intake rate that will be used
+        dimensionality (str): Used to determine how  serach rate and handling rate are calculated. See functions for details.
+
+    Returns:
+        [float]: Mass specific metabolic cost
+    """    
+
+    return am(m, dimensionality) * proportion
+
+
+def dmdt(m, t, alpha, epsilon, L_R, R, amp, period, dimensionality = "3D"):
     """[summary]
 
     Args:
@@ -246,10 +335,9 @@ def dmdt(m, t, alpha, epsilon, M, mc, L_R, R, amp, period, dimensionality = "3D"
     R_t = Rt(t, amp, R, period)
     gain = epsilon * Fun_Resp(m, R_t, dimensionality)
 
-    L_B = Bm(m, M, mc)
-
+    L_B = Bm(m)
     loss = (L_B) + (L_R)
-    dmdt = ((gain) - loss) * m 
+    dmdt = (gain - loss) * m 
     
     return dmdt
 
@@ -266,7 +354,8 @@ def dmdt_integrate(m0, time, params):
         [type]: [description]
     """    
     t = arange(0, time, 1)   
-    arg = (params["alpha"], params["epsilon"], params["M"], params["mc"], params["L_R"], params["R"], params["amp"], params["period"], params["dimensionality"])
+    arg = (params["alpha"], params["epsilon"], params["L_R"], 
+            params["R"], params["amp"], params["period"], params["dimensionality"])
 
     mass = odeint(dmdt, m0, t, args=arg)
 
@@ -296,96 +385,7 @@ def plot_supply(m0, time, params):
     plt.show()
     
     return m
-
-def Rt(t, amp, centre, period = 365):
-
-    """
-    To simulate the fluctuation of resource density in a functional response 
-    through time according to a sine wave.
-
-    Args:
-        t (int): time passed (is converted to radians in function)
-        amp (float): The amplitude of the sin wave
-        centre (float): The value around which resource density fluctuates.
-        period (int): Period of the wave in time. Defaults to 365
-
-
-    Returns:
-        float: Resource density
-    """   
-
-    x = t * (2 * pi / period) 
-
-    return (amp * sin(x)) + centre
-
-def am(m, dimensionality = "3D"):
-    """
-    Calculates mass specific search rate in a functional response as derived in Pawar et al 2012.
-
-    Args:
-        m (float): Mass of individual
-        dimensionality (str, optional): Dimensionality of the functional response. Defaults to "3D".
-
-    Returns:
-        float: Mass specific search rate (a)
-    """
-    if dimensionality == "3D":
-        a0 = -1.77  # this is log_10(a0) in reality
-        exp = 0.75 # abundant resources
-        # exp = 1.05 # scarce resoruces
-        logged = (exp*log10(m)) + a0
-        return 10**logged # unlog data #abundant resources/
-
-    if dimensionality == "2D":
-        a0 = -3.08 # this is log_10(a0) in reality
-        exp = 0.75 # abundant resources
-        # exp = 0.68 # scarce resoruces
-        logged = (exp*log10(m)) + a0
-        return 10**logged # unlog data #abundant resources/
-
-def hm(m, dimensionality = "3D"):
-    """
-    Calculates mass specific handling time in a functional response as derived in Pawar et al 2012.
-
-    Args:
-        m (float): Mass of individual
-        dimensionality (str, optional): Dimensionality of the functional response. Defaults to "3D".
-
-    Returns:
-        float: Mass specific search rate (a)
-    """
-
-    if dimensionality == "3D":
-        tk0 = 3.95  # this is log_10(tk0) in reality
-        # exp = -0.75 # abundant resources
-        exp = -1.1 # scarce resoruces
-        logged = (exp*log10(m)) + tk0
-        return 10**logged # unlog data #abundant resources/
-
-    if dimensionality == "2D":
-        tk0 = 3.04 # this is log_10(tk0) in reality
-        # exp = -0.75 # abundant resources
-        exp = -1.02 # scarce resoruces
-        logged = (exp*log10(m)) + tk0
-        return 10**logged # unlog data #abundant resources/
-
-
-        # return tk0 * (m**-1.02)
-        
-def Bm (m, M, mc):
-    """
-    Calculated mass specific metabolic cost
-
-    Args:
-        m (float): Mass of individual
-        M (float): Asymptotic mass
-        mc (float): Mass of a single cell
-
-    Returns:
-        [float]: Mass specific metabolic cost
-    """    
-
-    return (m * (M**-0.25)) / mc
+       
     
 
 ###### Classes ######
