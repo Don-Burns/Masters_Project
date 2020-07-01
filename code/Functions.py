@@ -289,7 +289,7 @@ def Fun_Resp(m, R, dimensionality = "3D"):
     f = (a *R) / (1 + a*h*R)
     return f
 
-def Bm (m, proportion = 0.1, dimensionality = "3D"):
+def Bm (m, proportion = 0.05, dimensionality = "3D"):
     """
     Calculated mass specific metabolic cost based on some percentage 
     of effective intake rate i.e. search rate
@@ -305,9 +305,62 @@ def Bm (m, proportion = 0.1, dimensionality = "3D"):
 
     return am(m, dimensionality) * proportion
 
+# def Bm(m):
+#     """
+#     metabolic rate based on Gillooly et al 2001 "Effects of size and temperature on metabolic rate".
+#     Uses Boltzmann's factor to approximate for the cost of all reactions in the body.
 
-def dmdt(m, t, alpha, epsilon, L_R, R, amp, period, dimensionality = "3D"):
-    """[summary]
+#     Args:
+#         m (float): Mass of individual
+
+#     Returns:
+#         [float]: Mass specific metabolic cost
+
+#     """
+#     Ei = 0.6
+#     k = 1.3807 * 10**-23 # boltzmann constant
+#     T = 293.15 # 20C in Kelvin
+#     M = m**-0.25 # so as it is m**0.75 when multiplied by mass
+#     return exp(-Ei/(k*T))*M
+
+def L(t, k = 0.01):
+    """
+    Suvival Function for reproduction modelled as an exponetially increasing number through time.
+    Based on thinking that most organisms will not live long enough for factors such as 
+    reproductive senescence to be a factor.
+
+    Args:
+        t (int): Time
+        k (float, optional): Reproductive senescence. Defaults to 0.01.
+
+    Returns:
+        [type]: [description]
+    """
+    return exp(-k*t)
+
+def reproduction(t, c, m, rho, alpha, k = 0.01):
+    """
+    Calculates the reproductive output of an organisms at time `t` in terms of biomass
+
+    Args:
+        t (int): Time
+        c (float): Reproductive scaling constant
+        m (float): Mass of individual
+        rho (float): Reproductive scaling exponent
+        k (float, optional): Reproductive senescence. Defaults to 0.01.]
+        
+    Returns:
+        float: Reproductive output in terms of biomass
+
+    """    
+    Q = L(t-alpha) # mortality
+
+    return Q * c * m**rho
+
+
+def dmdt(m, t, alpha, epsilon, L_B, c, rho, R, amp, period, dimensionality = "3D"):
+    """
+    Calculates the instantaneous change in mass at time `t`. 
 
     Args:
         m (float): Mass of individual
@@ -331,12 +384,14 @@ def dmdt(m, t, alpha, epsilon, L_R, R, amp, period, dimensionality = "3D"):
     # check if individual is at/past maturation
     if t < alpha:
         L_R = 0
+    else:
+        L_R = reproduction(t, c, m, rho, alpha, k = 0.1)
 
     R_t = Rt(t, amp, R, period)
     gain = epsilon * Fun_Resp(m, R_t, dimensionality)
 
-    L_B = Bm(m)
-    loss = (L_B) + (L_R)
+    # L_B = Bm(m)
+    loss = L_B + L_R
     dmdt = (gain - loss) * m 
     
     return dmdt
@@ -351,10 +406,10 @@ def dmdt_integrate(m0, time, params):
         params (dict): see `dmdt` function for needed names of parameters
 
     Returns:
-        [type]: [description]
+        array: growth curve of organism
     """    
     t = arange(0, time, 1)   
-    arg = (params["alpha"], params["epsilon"], params["L_R"], 
+    arg = (params["alpha"], params["epsilon"], params["L_B"], params["c"], params["rho"], 
             params["R"], params["amp"], params["period"], params["dimensionality"])
 
     mass = odeint(dmdt, m0, t, args=arg)
@@ -372,6 +427,9 @@ def plot_supply(m0, time, params):
         m0 (float): Initial mass of individual
         time (int): Time
         params (dict): see `dmdt` function for needed names of parameters
+
+    Returns:
+        array: growth curve of organism
     """
 
     m = dmdt_integrate(m0, time, params)[:,0] #change dimensions from col to row
