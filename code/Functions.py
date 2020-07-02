@@ -7,16 +7,12 @@
 
 
 ###### Imports ######
-from numpy import arange as arange
-
+from numpy import arange, array
+##optimisation
+from numpy import unravel_index, argmax 
 ## maths functions
-from scipy.integrate import odeint as odeint
-from numpy import exp as exp
-from numpy import sin as sin
-from numpy import pi as pi
-from numpy import log10 as log10
-
-
+from scipy.integrate import odeint 
+from numpy import exp, sin, pi, log10
 ## plotting
 import matplotlib.pyplot as plt
 
@@ -248,7 +244,7 @@ def hm(m, dimensionality = "3D"):
         logged = (-beta*log10(m)) + tk0
         return 10**logged # unlog data #abundant resources/
 
-def Rt(t, amp, centre, period = 365):
+def Xrt(t, amp, centre, period = 365):
     
     """
     To simulate the fluctuation of resource density in a functional response 
@@ -269,7 +265,7 @@ def Rt(t, amp, centre, period = 365):
 
     return (amp * sin(x)) + centre
 
-def Fun_Resp(m, R, dimensionality = "3D"):
+def Fun_Resp(m, Xr, dimensionality = "3D"):
     """
     Calculates the functional response of an organism dependent on mass.
 
@@ -286,7 +282,7 @@ def Fun_Resp(m, R, dimensionality = "3D"):
     a = am(m)  # find mass dependent search rate
     h = hm(m) # find mass dependent handling time
     
-    f = (a *R) / (1 + a*h*R)
+    f = (a *Xr) / (1 + a*h*Xr)
     return f
 
 def Bm (m, proportion = 0.05, dimensionality = "3D"):
@@ -358,7 +354,7 @@ def reproduction(t, c, m, rho, alpha, k = 0.01):
     return Q * c * m**rho
 
 
-def dmdt(m, t, alpha, epsilon, L_B, c, rho, R, amp, period, dimensionality = "3D"):
+def dmdt(mR0, t, alpha, epsilon, L_B, c, rho, Xr, amp, period, dimensionality = "3D"):
     """
     Calculates the instantaneous change in mass at time `t`. 
 
@@ -367,10 +363,9 @@ def dmdt(m, t, alpha, epsilon, L_B, c, rho, R, amp, period, dimensionality = "3D
         t (int): time
         alpha (int): maturation time
         epsilon (float): Efficiency term
-        M (float): Assymptotic mass
-        mc (float): mass of a cell
-        L_R (float): [description]
-        ## a (float): [description]
+        L_B (float): Mass Independent metabolic cost (units : mass^-0.25/time)
+        c (float): Metabolic cost constant
+        rho (float): Metabolic cost exponent
         R (float): The expected median value for resource density
         amp (float): [description]
         period (int): [description]
@@ -380,43 +375,49 @@ def dmdt(m, t, alpha, epsilon, L_B, c, rho, R, amp, period, dimensionality = "3D
     Returns:
         float: change in mass (dm/dt) at time t
     """
+    #unpack mass and reproduction
+    m, repro = mR0
 
     # check if individual is at/past maturation
     if t < alpha:
         L_R = 0
+        repro_out = 0
     else:
-        L_R = reproduction(t, c, m, rho, alpha, k = 0.1)
+        L_R = c*m**rho
+        repro_out = reproduction(t, c, m, rho, alpha, k = 0.1)
 
-    R_t = Rt(t, amp, R, period)
-    gain = epsilon * Fun_Resp(m, R_t, dimensionality)
+    Xr_t = Xrt(t, amp, Xr, period)
+    gain = epsilon * Fun_Resp(m, Xr_t, dimensionality)
 
-    # L_B = Bm(m)
-    loss = L_B + L_R
-    dmdt = (gain - loss) * m 
+    L_B = L_B * m # scale for mass
+    loss = (L_B) + L_R
+    dmdt = (gain - loss) #* m 
     
-    return dmdt
+    return array([dmdt, repro_out])
 
-def dmdt_integrate(m0, time, params):
+def dmdt_integrate(m0, R0, time, params):
     """
     integrates dmdt to return a growth curve.
 
     Args:
         m0 (float): Initial mass of individual
+        R0 (float): Initial reproductive output
         time (int): Time
         params (dict): see `dmdt` function for needed names of parameters
 
     Returns:
-        array: growth curve of organism
+        array: growth curve of organism, and reproductive output of organism
     """    
     t = arange(0, time, 1)   
+    mR0 = array([m0, R0])
     arg = (params["alpha"], params["epsilon"], params["L_B"], params["c"], params["rho"], 
-            params["R"], params["amp"], params["period"], params["dimensionality"])
+            params["Xr"], params["amp"], params["period"], params["dimensionality"])
 
-    mass = odeint(dmdt, m0, t, args=arg)
+    mR = odeint(dmdt, mR0, t, args=arg)
 
-    return mass
+    return mR
 
-def plot_supply(m0, time, params):
+def plot_supply(m0, R0, time, params):
     """
     Plots the growth curve of a bottom up supply based model in the form:
     dmdt = [gain - loss]m ;  where gain is modeled as a functional response 
@@ -425,27 +426,58 @@ def plot_supply(m0, time, params):
 
     Args:
         m0 (float): Initial mass of individual
+        R0 (float): Initial reproductive output
         time (int): Time
         params (dict): see `dmdt` function for needed names of parameters
 
     Returns:
-        array: growth curve of organism
+        array: growth curve of organism, and reproductive output of organism
     """
 
-    m = dmdt_integrate(m0, time, params)[:,0] #change dimensions from col to row
+    mR = dmdt_integrate(m0, R0, time, params) 
+    # unpack results
+    m = mR[:,0]
+    repro = mR[:,1]
+
     t = arange(0, time, 1)
 
     plt.figure()
-    plt.plot(t, m, label="Mass")
+    plt.plot(t, m, label="Mass") #change dimensions from col to row
+    plt.plot(t, repro, label="Reproductive Output") 
     plt.xlabel("Time")
     plt.ylabel("Mass")
-    plt.legend(loc="upper left")
+    plt.legend()
     plt.show()
     
-    return m
+    return mR
        
-    
 
+## Optimisation
+
+
+def find_max(arr):
+    """
+    A function to find the maximum of an array and return its indices
+
+    Arguments:
+        arr {np.array} -- the matrix to find the max value of 
+
+    Returns:
+        {tuple} --  the indices of the maximum value
+
+    """
+
+    max_ind = unravel_index(argmax(array, axis=None), array.shape)
+    return max_ind
+
+def find_optimum(c_vec, rho_vec, m0, R0, time, params):
+# do the c and rho vectors as a meshgrid 
+# this should speed it up 
+# from there the same as the notebook with all the debugging left to do
+
+
+
+    return array([c_opt, rho_opt])
 ###### Classes ######
 
 
