@@ -9,10 +9,10 @@
 ###### Imports ######
 from numpy import arange, array
 ##optimisation
-from numpy import unravel_index, argmax 
+from numpy import unravel_index, argmax, isnan, nan_to_num, zeros
 ## maths functions
 from scipy.integrate import odeint 
-from numpy import exp, sin, pi, log10
+from numpy import exp, sin, pi, log10, log
 ## plotting
 import matplotlib.pyplot as plt
 
@@ -206,15 +206,15 @@ def am(m, dimensionality = "3D"):
     """
     if dimensionality == "3D":
         a0 = -1.77  # this is log_10(a0) in reality
-        gamma = 0.75 # abundant resources
-        # gamma = 1.05 # scarce resources
+        # gamma = 0.75 # abundant resources
+        gamma = 1.05 # scarce resources
         logged = (gamma*log10(m)) + a0
         return 10**logged # unlog data #abundant resources/
 
     if dimensionality == "2D":
         a0 = -3.08 # this is log_10(a0) in reality
-        gamma = 0.75 # abundant resources
-        # gamma = 0.68 # scarce resources
+        # gamma = 0.75 # abundant resources
+        gamma = 0.68 # scarce resources
         logged = (gamma*log10(m)) + a0
         return 10**logged # unlog data #abundant resources/
 
@@ -232,15 +232,15 @@ def hm(m, dimensionality = "3D"):
 
     if dimensionality == "3D":
         tk0 = 3.04  # this is log_10(tk0) in reality
-        beta = 0.75 # abundant resources
-        # beta = -1.1 # scarce resoruces
+        # beta = 0.75 # abundant resources
+        beta = 1.1 # scarce resoruces
         logged = (-beta*log10(m)) + tk0
         return 10**logged # unlog data #abundant resources/
 
     if dimensionality == "2D":
         tk0 = 3.95 # this is log_10(tk0) in reality
-        beta = 0.75 # abundant resources
-        # beta = -1.02 # scarce resoruces
+        # beta = 0.75 # abundant resources
+        beta = 1.02 # scarce resoruces
         logged = (-beta*log10(m)) + tk0
         return 10**logged # unlog data #abundant resources/
 
@@ -285,21 +285,24 @@ def Fun_Resp(m, Xr, dimensionality = "3D"):
     f = (a *Xr) / (1 + a*h*Xr)
     return f
 
-def Bm (m, proportion = 0.05, dimensionality = "3D"):
-    """
-    Calculated mass specific metabolic cost based on some percentage 
-    of effective intake rate i.e. search rate
+# def Bm (m, proportion = 0.05, dimensionality = "3D"):
+#     """
+#     Calculated mass specific metabolic cost based on some percentage 
+#     of effective intake rate i.e. search rate
 
-    Args:
-        m (float): Mass of individual
-        proportion (float): The proportion of intake rate that will be used
-        dimensionality (str): Used to determine how  serach rate and handling rate are calculated. See functions for details.
+#     Args:
+#         m (float): Mass of individual
+#         proportion (float): The proportion of intake rate that will be used
+#         dimensionality (str): Used to determine how  serach rate and handling rate are calculated. See functions for details.
 
-    Returns:
-        [float]: Mass specific metabolic cost
-    """    
-
-    return am(m, dimensionality) * proportion
+#     Returns:
+#         [float]: Mass specific metabolic cost
+#     """    
+#     a0 = 0.01698 # from `am` function but unlogged using gamma = 0.75
+#     gamma = 0.75
+#     constant = a0 *resource
+#     return constant * (mass**gamma)
+#     return am(m, dimensionality) * proportion
 
 # def Bm(m):
 #     """
@@ -351,10 +354,26 @@ def reproduction(t, c, m, rho, alpha, k = 0.01):
     """    
     Q = L(t-alpha) # mortality
 
-    return Q * c * m**rho
+    return Q * c * (m**rho)
 
+def metabolic_cost(mass):
+    """
+    Calculates the metabolic cost of an organism in term of mass/time
 
-def dmdt(mR0, t, alpha, epsilon, L_B, c, rho, Xr, amp, period, dimensionality = "3D"):
+    Args:
+        m (float): Mass of individual (units: mass)
+        metabolic_rate (float): The standard metabolic rate or resting metabolic rate of the organism (units: energy * mass / time)
+        conversion_factor ([type]): Value for how much energy is in a unit of mass (units: energy / mass)
+
+    Returns:
+        float: The "mass cost" of the organism at the given mass
+    """
+    log_m = log(mass)
+    alpha = 0.76
+    intercept = -5.71
+    return 10**(intercept + (alpha*log_m))
+
+def dmdt(mR0, t, alpha, epsilon, metabolic_rate, conversion_factor, c, rho, Xr, amp, period, dimensionality = "3D"):
     """
     Calculates the instantaneous change in mass at time `t`. 
 
@@ -363,7 +382,7 @@ def dmdt(mR0, t, alpha, epsilon, L_B, c, rho, Xr, amp, period, dimensionality = 
         t (int): time
         alpha (int): maturation time
         epsilon (float): Efficiency term
-        L_B (float): Mass Independent metabolic cost (units : mass^-0.25/time)
+        L_B (float): Mass Independent metabolic cost (units : mass^0.75/time)
         c (float): Metabolic cost constant
         rho (float): Metabolic cost exponent
         R (float): The expected median value for resource density
@@ -382,17 +401,22 @@ def dmdt(mR0, t, alpha, epsilon, L_B, c, rho, Xr, amp, period, dimensionality = 
     if t < alpha:
         L_R = 0
         repro_out = 0
-    else:
-        L_R = c*m**rho
+    if t >= alpha:
+        L_R = c*(m**rho)
         repro_out = reproduction(t, c, m, rho, alpha, k = 0.1)
 
+    # Gain
     Xr_t = Xrt(t, amp, Xr, period)
     gain = epsilon * Fun_Resp(m, Xr_t, dimensionality)
-
-    L_B = L_B * m # scale for mass
-    loss = (L_B) + L_R
+    # Loss
+    L_B = metabolic_cost(m)
+    loss = L_B + L_R
+    # dm/dt
     dmdt = (gain - loss) #* m 
     
+    if dmdt * m < 0:
+        dmdt = -m
+
     return array([dmdt, repro_out])
 
 def dmdt_integrate(m0, R0, time, params):
@@ -410,7 +434,9 @@ def dmdt_integrate(m0, R0, time, params):
     """    
     t = arange(0, time, 1)   
     mR0 = array([m0, R0])
-    arg = (params["alpha"], params["epsilon"], params["L_B"], params["c"], params["rho"], 
+    arg = (params["alpha"], params["epsilon"], 
+            params["metabolic_rate"], params["conversion_factor"],
+            params["c"], params["rho"], 
             params["Xr"], params["amp"], params["period"], params["dimensionality"])
 
     mR = odeint(dmdt, mR0, t, args=arg)
@@ -467,7 +493,7 @@ def find_max(arr):
 
     """
 
-    max_ind = unravel_index(argmax(array, axis=None), array.shape)
+    max_ind = unravel_index(argmax(array, axis=None), arr.shape)
     return max_ind
 
 def find_optimum(c_vec, rho_vec, m0, R0, time, params):
@@ -475,7 +501,27 @@ def find_optimum(c_vec, rho_vec, m0, R0, time, params):
 # this should speed it up 
 # from there the same as the notebook with all the debugging left to do
 
+    
+    # array to store final reproduction values
+    # `c` will be row and `rho` columns, ith val is ith val in c_vec or jth val is jth in rho_vec
+    repro_array = zeros((len(c_vec), len(rho_vec)))
 
+    for i, c in enumerate(c_vec):
+        params["c"] = c
+        for j, rho in enumerate(rho_vec):
+            params["rho"] = rho
+            result = dmdt_integrate(m0, R0, time, params)
+            mass = result[:, 0]
+            repro = result[:, 1]
+            total_repro = repro[-1]
+            if mass[-1] < mass[params["alpha"]]:
+                total_repro = -1 # if the fish shrinks
+            repro_array[i, j] = total_repro
+    repro_array = nan_to_num(repro_array) # replace `nan` with 0
+    max_ind = find_max(repro_array)
+    max_repro = repro_array[max_ind]
+    c_opt = c_vec[max_ind[0]]
+    rho_opt = rho_vec[max_ind[1]]
 
     return array([c_opt, rho_opt])
 ###### Classes ######
