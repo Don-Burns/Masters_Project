@@ -373,7 +373,7 @@ def metabolic_cost(mass):
     intercept = -5.71
     return 10**(intercept + (alpha*log_m))
 
-def dmdt(mR0, t, alpha, epsilon, metabolic_rate, conversion_factor, c, rho, Xr, amp, period, dimensionality = "3D"):
+def dmdt(mR0, t, alpha, epsilon, c, rho, Xr, amp, period, dimensionality = "3D"):
     """
     Calculates the instantaneous change in mass at time `t`. 
 
@@ -414,8 +414,10 @@ def dmdt(mR0, t, alpha, epsilon, metabolic_rate, conversion_factor, c, rho, Xr, 
     # dm/dt
     dmdt = (gain - loss) #* m 
     
-    if dmdt * m < 0:
+    if  m - dmdt < 0:
+        poop=0
         dmdt = -m
+        poop=0
 
     return array([dmdt, repro_out])
 
@@ -435,11 +437,10 @@ def dmdt_integrate(m0, R0, time, params):
     t = arange(0, time, 1)   
     mR0 = array([m0, R0])
     arg = (params["alpha"], params["epsilon"], 
-            params["metabolic_rate"], params["conversion_factor"],
             params["c"], params["rho"], 
             params["Xr"], params["amp"], params["period"], params["dimensionality"])
 
-    mR = odeint(dmdt, mR0, t, args=arg)
+    mR = odeint(func=dmdt, y0=mR0, t=t, args=arg)
 
     return mR
 
@@ -530,7 +531,19 @@ def find_optimum(c_vec, rho_vec, m0, R0, time, params):
 
 ###### Testing ######
 # a section to test functions and other functionality
+# trying to see what is causing m to drop to 0 in most cases
+# from numpy import linspace
+
+m0 = 0.1
+R0 = 0
+time = 10**5
+
+params = {"alpha" : 5000, "epsilon" : 0.8,
+          "metabolic_rate" : 17, "conversion_factor" : 0.024, 
+          "c" : 0.1, "rho" : 0.75,
+          "Xr" : 10**6, "amp" : 0, "period" : 365, "dimensionality" : "3D"}
+
+print(dmdt_integrate(m0, R0, time, params))
 
 
 ###### Notes / To Do ######
-# may want to define B0 and B0FR based on b0 and calculate in function?
