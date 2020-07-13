@@ -382,12 +382,11 @@ def dmdt(mR0, t, alpha, epsilon, c, rho, Xr, amp, period, dimensionality = "3D")
         t (int): time
         alpha (int): maturation time
         epsilon (float): Efficiency term
-        L_B (float): Mass Independent metabolic cost (units : mass^0.75/time)
         c (float): Metabolic cost constant
         rho (float): Metabolic cost exponent
-        R (float): The expected median value for resource density
-        amp (float): [description]
-        period (int): [description]
+        Xr (float): The expected median value for resource density
+        amp (float): Amplitude of resource fluctuation around `Xr`
+        period (int): The period (duration) of the resource cycle
         dimensionality (str): See `Func_Resp`
 
 
@@ -414,7 +413,7 @@ def dmdt(mR0, t, alpha, epsilon, c, rho, Xr, amp, period, dimensionality = "3D")
     # dm/dt
     dmdt = (gain - loss) #* m 
     
-    if  m - dmdt < 0:
+    if  dmdt + m < 0:
         poop=0
         dmdt = -m
         poop=0
@@ -538,12 +537,12 @@ m0 = 0.1
 R0 = 0
 time = 10**5
 
-params = {"alpha" : 5000, "epsilon" : 0.8,
+params = {"alpha" : 100, "epsilon" : 0.8,
           "metabolic_rate" : 17, "conversion_factor" : 0.024, 
           "c" : 0.1, "rho" : 0.75,
           "Xr" : 10**6, "amp" : 0, "period" : 365, "dimensionality" : "3D"}
 
-print(dmdt_integrate(m0, R0, time, params))
+dmdt_integrate(m0, R0, time, params)
 
 
 ###### Notes / To Do ######
