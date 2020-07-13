@@ -90,7 +90,8 @@ def hou_integrate(m0, time, params):
             beta (int): Proportion of feeding restriciton
             f (int): Activity scope
             Ec (int): Energy stored in newly synthesised biomass
-            Em (int): Metabolic energy required to synthesize one unit of biomass
+            Em (int): Metabolic energy required to synthesize one unit of 
+                        biomass
             B0 (int): Taxon specific constant ad libitum
             B0FR (int): Taxon specific constant under feeding restriction
             M (int): Adult mass
@@ -122,7 +123,8 @@ def plot_hou(m0, time, params):
             beta (int): Proportion of feeding restriciton
             f (int): Activity scope
             Ec (int): Energy stored in newly synthesised biomass
-            Em (int): Metabolic energy required to synthesize one unit of biomass
+            Em (int): Metabolic energy required to synthesize one unit of 
+                        biomass
             B0 (int): Taxon specific constant ad libitum
             B0FR (int): Taxon specific constant under feeding restriction
             M (int): Adult mass
@@ -195,32 +197,33 @@ def plot_hou_simple(m0, time, params):
 ## Supply Model ##
 def am(m, dimensionality = "3D"):
     """
-    Calculates mass specific search rate in a functional response as derived in Pawar et al 2012.
+    Calculates mass specific search rate in a functional response as derived in 
+    Pawar et al 2012.
 
     Args:
         m (float): Mass of individual
-        dimensionality (str, optional): Dimensionality of the functional response. Defaults to "3D".
+        dimensionality (str, optional): Dimensionality of the functional 
+        response. Defaults to "3D".
 
     Returns:
         float: Mass specific search rate (a)
     """
     if dimensionality == "3D":
-        a0 = -1.77  # this is log_10(a0) in reality
-        # gamma = 0.75 # abundant resources
+        a0 = 10**-1.77  
         gamma = 1.05 # scarce resources
-        logged = (gamma*log10(m)) + a0
-        return 10**logged # unlog data #abundant resources/
+        return (m**gamma) * a0
 
     if dimensionality == "2D":
-        a0 = -3.08 # this is log_10(a0) in reality
-        # gamma = 0.75 # abundant resources
+        a0 = 10**-3.08 
         gamma = 0.68 # scarce resources
-        logged = (gamma*log10(m)) + a0
-        return 10**logged # unlog data #abundant resources/
+        return (m**gamma) * a0
 
 def hm(m, dimensionality = "3D"):
     """
-    Calculates mass specific handling time in a functional response as derived in Pawar et al 2012.
+    Calculates mass specific handling time in a functional response as derived
+     in Pawar et al 2012 SI. 
+    Scaling exponent is 0.75 due to caveats stated in the paper to do with the 
+    gathering of data for saturated resources.
 
     Args:
         m (float): Mass of individual
@@ -231,18 +234,14 @@ def hm(m, dimensionality = "3D"):
     """
 
     if dimensionality == "3D":
-        tk0 = 3.04  # this is log_10(tk0) in reality
-        # beta = 0.75 # abundant resources
-        beta = 1.1 # scarce resoruces
-        logged = (-beta*log10(m)) + tk0
-        return 10**logged # unlog data #abundant resources/
+        tk0 = 10**3.04  
+        beta = 0.75 
+        return (m**-beta) * tk0
 
     if dimensionality == "2D":
-        tk0 = 3.95 # this is log_10(tk0) in reality
-        # beta = 0.75 # abundant resources
-        beta = 1.02 # scarce resoruces
-        logged = (-beta*log10(m)) + tk0
-        return 10**logged # unlog data #abundant resources/
+        tk0 = 10**3.95 
+        beta = 0.75 
+        return (m**-beta) * tk0
 
 def Xrt(t, amp, centre, period = 365):
     
@@ -279,30 +278,35 @@ def Fun_Resp(m, Xr, dimensionality = "3D"):
     Returns:
         [float]: consumption rate of the organism
     """    
-    a = am(m)  # find mass dependent search rate
-    h = hm(m) # find mass dependent handling time
+    a = am(m, dimensionality)  # find mass dependent search rate
+    h = hm(m, dimensionality) # find mass dependent handling time
     
     f = (a *Xr) / (1 + a*h*Xr)
     return f
 
-# def Bm (m, proportion = 0.05, dimensionality = "3D"):
-#     """
-#     Calculated mass specific metabolic cost based on some percentage 
-#     of effective intake rate i.e. search rate
+def Bm (m, delta, proportion = 0.05, dimensionality = "2D"):
+    """
+    Calculated mass specific metabolic cost based on some percentage 
+    of effective intake rate i.e. search rate
 
-#     Args:
-#         m (float): Mass of individual
-#         proportion (float): The proportion of intake rate that will be used
-#         dimensionality (str): Used to determine how  serach rate and handling rate are calculated. See functions for details.
+    Args:
+        m (float): Mass of individual
+        proportion (float): The proportion of intake rate that will be used
+        dimensionality (str): Used to determine how  serach rate and handling rate are calculated. See functions for details.
 
-#     Returns:
-#         [float]: Mass specific metabolic cost
-#     """    
-#     a0 = 0.01698 # from `am` function but unlogged using gamma = 0.75
-#     gamma = 0.75
-#     constant = a0 *resource
-#     return constant * (mass**gamma)
-#     return am(m, dimensionality) * proportion
+    Returns:
+        [float]: Mass specific metabolic cost
+    """    
+
+    if dimensionality == "3D":
+        a0 = 10**-1.77  
+        delta = 0.75 
+        return proportion *  m**delta + a0
+
+    if dimensionality == "2D":
+        a0 = 10**-3.08 
+        delta = 0.75
+        return proportion *  m**delta + a0
 
 # def Bm(m):
 #     """
@@ -532,17 +536,5 @@ def find_optimum(c_vec, rho_vec, m0, R0, time, params):
 # a section to test functions and other functionality
 # trying to see what is causing m to drop to 0 in most cases
 # from numpy import linspace
-
-m0 = 0.1
-R0 = 0
-time = 10**5
-
-params = {"alpha" : 100, "epsilon" : 0.8,
-          "metabolic_rate" : 17, "conversion_factor" : 0.024, 
-          "c" : 0.1, "rho" : 0.75,
-          "Xr" : 10**6, "amp" : 0, "period" : 365, "dimensionality" : "3D"}
-
-dmdt_integrate(m0, R0, time, params)
-
 
 ###### Notes / To Do ######
