@@ -251,7 +251,8 @@ def Xrt(t, amp, centre, period = 365):
 
     Args:
         t (int): time passed (is converted to radians in function)
-        amp (float): The amplitude of the sin wave
+        amp (float): The amplitude of the sin wave as a percentage of centre. 
+                    1 = 100% flucuation, i.e. from 0 to 2*centre
         centre (float): The value around which resource density fluctuates.
         period (int): Period of the wave in time. Defaults to 365
 
@@ -262,7 +263,7 @@ def Xrt(t, amp, centre, period = 365):
 
     x = t * (2 * pi / period) 
 
-    return (amp * sin(x)) + centre
+    return (amp*centre * sin(x)) + centre
 
 def Fun_Resp(m, Xr, dimensionality = "3D"):
     """
@@ -360,9 +361,9 @@ def reproduction(t, c, m, rho, alpha, k = 0.01):
 
     return Q * c * (m**rho)
 
-def metabolic_cost(mass):
+def metabolic_cost(m):
     """
-    Calculates the metabolic cost of an organism in term of mass/time
+    Calculates the metabolic cost of an organism in term of mass/time from Barneche et al 2014.
 
     Args:
         m (float): Mass of individual (units: mass)
@@ -372,12 +373,15 @@ def metabolic_cost(mass):
     Returns:
         float: The "mass cost" of the organism at the given mass
     """
-    log_m = log(mass)
-    alpha = 0.76
-    intercept = -5.71
-    return 10**(intercept + (alpha*log_m))
 
-def dmdt(mR0, t, alpha, epsilon, c, rho, Xr, amp, period, dimensionality = "3D"):
+    alpha = 0.76
+    intercept = exp(-5.71)
+    return intercept * m**alpha
+
+def dmdt(mR0, t, 
+         alpha, epsilon, norm_const, meta_prop, meta_exp, 
+         c, rho, 
+         Xr, amp, period, dimensionality = "3D"):
     """
     Calculates the instantaneous change in mass at time `t`. 
 
@@ -386,44 +390,50 @@ def dmdt(mR0, t, alpha, epsilon, c, rho, Xr, amp, period, dimensionality = "3D")
         t (int): time
         alpha (int): maturation time
         epsilon (float): Efficiency term
+        norm_const (float) : Normalisation constant, 
+                            i.e. Functional response value for a 1kg organism
+        meta_prop (float) : Proportion of optimum intake rate that 
+                            is assigned to metabolism
+        meta_exp (float) : Scaling exponent for metabolism
         c (float): Metabolic cost constant
         rho (float): Metabolic cost exponent
         Xr (float): The expected median value for resource density
-        amp (float): Amplitude of resource fluctuation around `Xr`
-        period (int): The period (duration) of the resource cycle
+        amp (float): amplitude of resource fluctuation around `Xr`
+        period (int): the period (duration) of the resource cycle
         dimensionality (str): See `Func_Resp`
 
 
     Returns:
         float: change in mass (dm/dt) at time t
     """
-    #unpack mass and reproduction
-    m, repro = mR0
-
+    
     # check if individual is at/past maturation
+    m, R = mR0
+    k = 0.01 #  reproductive senesence
     if t < alpha:
-        L_R = 0
-        repro_out = 0
+        R = 0 # reproductive cost
+    repro = 0 # reproductive output
     if t >= alpha:
-        L_R = c*(m**rho)
-        repro_out = reproduction(t, c, m, rho, alpha, k = 0.1)
+        R = c * norm_const * (m**rho) # kg/d
+        repro = repro_out = reproduction(t, c*norm_const, m, rho, alpha, k = 0.1)
 
     # Gain
     Xr_t = Xrt(t, amp, Xr, period)
-    gain = epsilon * Fun_Resp(m, Xr_t, dimensionality)
+    gain = epsilon * Fun_Resp(m, Xr, dimensionality) # kg/s
+    gain = gain * (60 * 60 * 24)# /s -> /min -> /hour -> /day
     # Loss
-    L_B = metabolic_cost(m)
-    loss = L_B + L_R
-    # dm/dt
-    dmdt = (gain - loss) #* m 
+    B_m  = norm_const * meta_prop * m**meta_exp  
+    loss = B_m + R
     
-    if  dmdt + m < 0:
-        poop=0
+    dmdt =  gain - loss
+    
+    # check for shrinking
+    if dmdt + m < 0:
         dmdt = -m
-        poop=0
 
-    return array([dmdt, repro_out])
-
+        
+    return array([dmdt, repro])
+    
 def dmdt_integrate(m0, R0, time, params):
     """
     integrates dmdt to return a growth curve.
@@ -437,12 +447,17 @@ def dmdt_integrate(m0, R0, time, params):
     Returns:
         array: growth curve of organism, and reproductive output of organism
     """    
+
+    # Organise Parameters for integration
     t = arange(0, time, 1)   
     mR0 = array([m0, R0])
     arg = (params["alpha"], params["epsilon"], 
+            params["norm_const"], params["meta_prop"], params["meta_exp"], 
             params["c"], params["rho"], 
-            params["Xr"], params["amp"], params["period"], params["dimensionality"])
+            params["Xr"], params["amp"], params["period"], 
+            params["dimensionality"])
 
+    # Simulate growth
     mR = odeint(func=dmdt, y0=mR0, t=t, args=arg)
 
     return mR
@@ -464,7 +479,9 @@ def plot_supply(m0, R0, time, params):
         array: growth curve of organism, and reproductive output of organism
     """
 
+    # Simulate growth
     mR = dmdt_integrate(m0, R0, time, params) 
+
     # unpack results
     m = mR[:,0]
     repro = mR[:,1]
