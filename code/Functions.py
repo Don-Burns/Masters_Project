@@ -9,7 +9,7 @@
 ###### Imports ######
 from numpy import arange, array
 ##optimisation
-from numpy import unravel_index, argmax, isnan, nan_to_num, zeros
+from numpy import unravel_index, argmax, isnan, nan_to_num, zeros, amax, where, zeros_like
 ## maths functions
 from scipy.integrate import odeint 
 from numpy import exp, sin, pi, log10, log
@@ -357,26 +357,34 @@ def reproduction(t, c, m, rho, alpha, k = 0.01):
         float: Reproductive output in terms of biomass
 
     """    
-    Q = L(t-alpha) # mortality
+    Z = 2/alpha
+    Q = L(t-alpha) # juvenile mortality
 
-    return Q * c * (m**rho)
 
-def metabolic_cost(m):
+    return Q * c * (m**rho) * exp(-(k+Z)*(t-alpha))
+
+def metabolic_cost(m, meta_exp=0.751):
     """
     Calculates the metabolic cost of an organism in term of mass/time from Barneche et al 2014.
 
     Args:
         m (float): Mass of individual (units: mass)
-        metabolic_rate (float): The standard metabolic rate or resting metabolic rate of the organism (units: energy * mass / time)
-        conversion_factor ([type]): Value for how much energy is in a unit of mass (units: energy / mass)
-
+        meta_exp (float): scaling exponent for metabolic cost with mass.Defaults to 0.751 as shown in Peters 1983 book
     Returns:
         float: The "mass cost" of the organism at the given mass
     """
 
-    alpha = 0.76
-    intercept = exp(-5.71)
-    return intercept * m**alpha
+    ## Barneche et al 2014 data
+    # alpha = 0.76
+    # intercept = exp(-5.71)
+    # return intercept * m**alpha
+
+    # peters book data
+    B_m= 0.14 * m**(meta_exp-1) # J/s
+    B_m = B_m *24*60*60 # J/s --> J/d
+    B_m = B_m *2.5*10**-4 # J/d --> wetmass/d
+
+    return B_m
 
 def dmdt(mR0, t, 
          alpha, epsilon, norm_const, meta_prop, meta_exp, 
@@ -406,23 +414,24 @@ def dmdt(mR0, t,
     Returns:
         float: change in mass (dm/dt) at time t
     """
-    
+
     # check if individual is at/past maturation
     m, R = mR0
     k = 0.01 #  reproductive senesence
     if t < alpha:
         R = 0 # reproductive cost
-    repro = 0 # reproductive output
+        repro = 0 # reproductive output
     if t >= alpha:
         R = c * norm_const * (m**rho) # kg/d
-        repro = repro_out = reproduction(t, c*norm_const, m, rho, alpha, k = 0.1)
+        repro = reproduction(t, c*norm_const, m, rho, alpha, k = 0.1)
 
     # Gain
     Xr_t = Xrt(t, amp, Xr, period)
     gain = epsilon * Fun_Resp(m, Xr, dimensionality) # kg/s
     gain = gain * (60 * 60 * 24)# /s -> /min -> /hour -> /day
     # Loss
-    B_m  = norm_const * meta_prop * m**meta_exp  
+    # B_m  = norm_const * meta_prop * m**meta_exp # metabolic as% of consumption
+    B_m = metabolic_cost(m, meta_exp) #* norm_const
     loss = B_m + R
     
     dmdt =  gain - loss
@@ -514,7 +523,9 @@ def find_max(arr):
 
     """
 
-    max_ind = unravel_index(argmax(array, axis=None), arr.shape)
+    max_ind = unravel_index(argmax(arr, axis=None), arr.shape)
+    # max_ind = where(arr == amax(arr))
+
     return max_ind
 
 def find_optimum(c_vec, rho_vec, m0, R0, time, params):
@@ -522,27 +533,36 @@ def find_optimum(c_vec, rho_vec, m0, R0, time, params):
 # this should speed it up 
 # from there the same as the notebook with all the debugging left to do
 
-    
-    # array to store final reproduction values
-    # `c` will be row and `rho` columns, ith val is ith val in c_vec or jth val is jth in rho_vec
-    repro_array = zeros((len(c_vec), len(rho_vec)))
+    repro_result_array = zeros((len(rho_vec), len(c_vec)))
+    mass_result_array = zeros_like(repro_result_array)
 
-    for i, c in enumerate(c_vec):
-        params["c"] = c
-        for j, rho in enumerate(rho_vec):
-            params["rho"] = rho
+    # take some key param vals for neatness
+    alpha = params["alpha"]
+
+    for i, rho in enumerate(rho_vec):
+        params["rho"] = rho
+        
+        for j, c in enumerate(c_vec):
+            params["c"] = c
             result = dmdt_integrate(m0, R0, time, params)
-            mass = result[:, 0]
-            repro = result[:, 1]
-            total_repro = repro[-1]
-            if mass[-1] < mass[params["alpha"]]:
-                total_repro = -1 # if the fish shrinks
-            repro_array[i, j] = total_repro
-    repro_array = nan_to_num(repro_array) # replace `nan` with 0
-    max_ind = find_max(repro_array)
-    max_repro = repro_array[max_ind]
-    c_opt = c_vec[max_ind[0]]
-    rho_opt = rho_vec[max_ind[1]]
+            mass = result[:,0]
+            repro = result[:,1]
+            
+            # check for shrinking
+            if mass[-1] < mass[alpha] or mass[0] > mass[-1] or isnan(mass[-1]):
+                mass = zeros_like(mass)
+                repro = zeros_like(repro)
+            
+            repro_result_array[i,j] = repro[-1]
+            mass_result_array[i,j] = mass[-1]
+
+    # find optimum values
+    max_ind = where(repro_result_array == amax(repro_result_array))
+    # max_ind = find_max(repro_array) # finds only first max value
+    max_repro = repro_result_array[max_ind]
+    i, j = max_ind
+    c_opt = c_vec[j]
+    rho_opt = rho_vec[i]
 
     return array([c_opt, rho_opt])
 ###### Classes ######
