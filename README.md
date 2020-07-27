@@ -1,5 +1,4 @@
-
-<img src = "https://upload.wikimedia.org/wikipedia/en/thumb/a/ad/Imperial_College_London_crest.svg/1200px-Imperial_College_London_crest.svg.png" width = 100 height = 100 />
+<img src = "./writing/images/IC_crest.svg" width = 100 height = 100 />
 
 
 # Masters Thesis
