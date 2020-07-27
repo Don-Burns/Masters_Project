@@ -1,13 +1,14 @@
 %% The report to gather all sections into, set formatting and compile.
 
-\documentclass[a4paper]{article}
+\documentclass[a4paper, hidelinks]{article} %hidelinks removes the red boxes around hyperlinks
 
 %%%%%%%%%% Packages %%%%%%%%%%
 
 \usepackage{epstopdf} % to allow use of crest in title page
 \usepackage{graphicx}
 \usepackage[mathlines]{lineno}%line numbers
-\usepackage{natbib}
+%\usepackage{natbib}
+\usepackage[backend=biber,style=alphabetic]{biblatex}
 \usepackage{hyperref} % for URLs
 
 %%%%%%%%%% Custome Commands %%%%%%%%%%
@@ -20,6 +21,11 @@
 %\renewcommand{\familydefault}{\sfdefault} % set font to arial clone (helvet)
 
 \usepackage[compact]{titlesec} % reduce spacing bewteen section titles
+
+%%%%%%%%%% Bibliography %%%%%%%%%%
+\addbibresource{../Masters_Thesis.bib}
+
+
 %%%%%%%%%% Document %%%%%%%%%%
 \begin{document}
 	%%%%%%%%%% Title Page %%%%%%%%%%
@@ -28,18 +34,7 @@
 	%%%%%%%%%% Abstract %%%%%%%%%%
 	\section*{Abstract}
 	\linenumbers
-	some text
-	
-	some text
-	
-	some text
-	
-	some text
-	
-	some text
-	
-	some text
-	
+
 	
 	
 	\nolinenumbers
@@ -55,6 +50,24 @@
 	%%%%%%%%%% Introduction %%%%%%%%%%
 \section{Introduction}
 	\linenumbers
+	
+	Growth is in essence a balancing act between how much energy an organism can acquire and the amount of energy required for maintenance, that is movement, digestion et cetera.  
+	
+	%	introduce west 2001 \cite{West2001}
+	%	
+	%	improved by hou et al \cite{Hou2008} talk about including SDA
+	%	
+	%	move to including reproduction with \cite{Charnov2001}
+	
+	Key to the above models is that many physical rates %find better word
+	scale with mass to some power, known as power laws.  That is some rate $Y$ can be expressed for any mass by $Y = Y_0 m^\beta$.  
+	
+	% Discuss allometry and isometry here to highlight what scaling super or sub linearly means
+	
+	In classic OGMs this is most notable in determining how much energy an organism acquires at a given mass where gain = constant $\times$ mass$^{0.75}$.  This scaling is based on the work of \cite{West1997} \cite{Allen2005}
+	
+	
+\subsection{section layout (old)}
 	What is an OGM and ontogenic growth?
 	
 	An ontogenetic model or OGM is a model which describes the development of an organism.  Within a metabolic framework this describes how an organism's assess to and and alocation of energy changes throughout its lifetime.
@@ -83,27 +96,34 @@
 	%%%%%%%%%% Methods %%%%%%%%%%
 \section{Methods}
 	\linenumbers
-	some text
+	\subsection{Gain}
+	
+	\subsection{Loss}
+	\subsubsection{Maintenance Cost}
+	\subsubsection{Reproductive Cost}
+	\subsection{Reproductive Output}
+	
+	\subsection{notes}
+	c bounded between 0 and 1 since it is basically GSI
 	\nolinenumbers
 	%%%%%%%%%% Results %%%%%%%%%%
 \section{Results}
 	\linenumbers
-	some text
+	
 	\nolinenumbers
 	%%%%%%%%%% Discussion %%%%%%%%%%
 \section{Discussion}
 	\linenumbers
-	some text
+	
 	\nolinenumbers
 	%%%%%%%%%% Conclusion %%%%%%%%%%
-\section{Conclusion (not part of the scheme?)}
+\section{Conclusion}
 	\linenumbers
-	some text
+	
 	\nolinenumbers
 	%%%%%%%%%% Bibliography %%%%%%%%%%
-
-	\renewcommand\bibname{References} % set bib Title
-	\bibliographystyle{agsm}
-	\bibliography{./Masters_Thesis.bib}
+	\newpage
+	
+\printbibliography
 
 \end{document}

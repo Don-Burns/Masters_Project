@@ -8,7 +8,7 @@ texcount -1 -sum Report.tex > ./Report.sum # word count
 sleep 2s
 pdflatex Report.tex
 pdflatex Report.tex
-bibtex Report
+biber Report
 pdflatex Report.tex
 pdflatex Report.tex
 # remove junk files produced 
