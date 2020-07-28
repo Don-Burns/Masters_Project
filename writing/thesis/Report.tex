@@ -8,9 +8,9 @@
 \usepackage{graphicx}
 \usepackage[mathlines]{lineno}%line numbers
 %\usepackage{natbib}
-\usepackage[backend=biber,style=alphabetic]{biblatex}
+\usepackage[backend=biber,style=authoryear-comp]{biblatex}
 \usepackage{hyperref} % for URLs
-
+\usepackage[table, dvipsnames]{xcolor}
 %%%%%%%%%% Custome Commands %%%%%%%%%%
 \newcommand{\crest}{\includegraphics[width = 4cm, keepaspectratio]{../images/IC_Crest.eps}} % Imperial crest
 \newcommand\wordcount{\input{Report.sum}} % to include word count 
@@ -50,80 +50,143 @@
 	%%%%%%%%%% Introduction %%%%%%%%%%
 \section{Introduction}
 	\linenumbers
+	% Why is growth important
+	Understanding how organisms grow and what factors play a role in determining growth
+	Larger fish produce more offspring % this is known in general isometrically
+	and may even lead to more offspring than if the same mass were spread over two fish \parencite{Barneche2018}.
+	Larger fish also use energy more efficiently than multiple smaller ones per unit mass (because they have a lower mass specific metabolic rate \parencite{Peters1983}) so it may actually reduce stress upon the ecosystem from an energetic perspective which could be useful when trying to manage fish stocks %need citations for this
+	It is already known that metabolic rates and the size of fish is dependant on temperature and with global warming understanding in greater detail how increased metabolic rates may affect growth is useful.
+	
+	%
 	
 	Growth is in essence a balancing act between how much energy an organism can acquire and the amount of energy required for maintenance, that is movement, digestion et cetera.  
 	
+	%power laws -- needs citation
+	Key to understanding rates and their relationship with mass is the concept of power laws. Many biological traits can be described as scaling to the power of some other biological trait.  That is some rate, $Y$, can be expressed for any mass by $Y = Y_0 m^\beta$.  Power laws can be broadly categorised based on the value of their exponent, $\beta$.  Where the exponent does not equal one, the relationship is said to be allometric.  That is the trait does not increase at the same rate as the trait being compared against.  Where the exponent equals one the relationship is described as isometric, that is the two traits increase at the same rate. For the purposes of describing growth these relationships are indispensable.   
+	
+	Traditionally ontogenetic growth models have relied on knowing how large an organism is expected to grow.
+	%	von Bertalanffy / puetter model
+	The von Bertalanffy growth equation relies on knowing the longest a fish can be and the length of the fish at the beginning of measurements \parencite{vonBertalanffy1938, Putter1918}.  From here for a known growth rate, the length of the fish after a set amount of time has passed can be predicted.
 	%	introduce west 2001 \cite{West2001}
-	%	
-	%	improved by hou et al \cite{Hou2008} talk about including SDA
-	%	
-	%	move to including reproduction with \cite{Charnov2001}
+		% then take it to energetics
+	One of the best known examples of an OGM is the model developed by \cite{West2001}.  This model is parametrised around the average energy content of tissue asymptotic mass.  Asymptotic mass being the mass at which growth has essentially stopped due to metabolic cost and energy intake equalling each other.  
+		%	improved by hou et al \cite{Hou2008} talk about including SDA
+		%	
+		%	move to including reproduction with \cite{Charnov2001}
 	
-	Key to the above models is that many physical rates %find better word
-	scale with mass to some power, known as power laws.  That is some rate $Y$ can be expressed for any mass by $Y = Y_0 m^\beta$.  
-	
+		% bring up the caveats/assumptions of the model i.e. isometric metabolism and repro, 0.75 scaling of intake. optimal intake at all times etc. test
 	% Discuss allometry and isometry here to highlight what scaling super or sub linearly means
 	
-	In classic OGMs this is most notable in determining how much energy an organism acquires at a given mass where gain = constant $\times$ mass$^{0.75}$.  This scaling is based on the work of \cite{West1997} \cite{Allen2005}
+	In classic OGMs this is most notable in determining how much energy an organism acquires at a given mass where gain = constant $\times$ mass$^{0.75}$.  This scaling is based on the work of \cite{West1997}
 	
+	In the face two of the key assumptions of \cite{Charnov2001, West2001} OGM not being true, that reproduction and metabolism scale isometrically, there is a need to take a novel approach to modelling fish growth, in particular choosing to focus on developing how intake is described to better reflect the real world.  To do this an obvious starting point is to model intake as a functional response \parencite{Holling1959} so as to reflect real world intake rates.
+	% describe a functional response and the work behind it on a general level without equations.
 	
-\subsection{section layout (old)}
-	What is an OGM and ontogenic growth?
-	
-	An ontogenetic model or OGM is a model which describes the development of an organism.  Within a metabolic framework this describes how an organism's assess to and and alocation of energy changes throughout its lifetime.
-	
-	explain west's model
-	
-	explain terms 
-	
-	why is `a` resting metabolic rate?
-	
-	explain charnov's contribution
-	
-	- graph with generic example of the plot for illustration purposes
-	
-	explain what I am adding to `cm` and why --> maybe leave for the methods?
-	
-	talk about barneche 2018
-	
-	raises question of scaling elsewhere 
-	
-	talk about samraats work and how I plan to use it
-	
-	the goal of my paper
+	% samraats works feels like it belongs in the methods section more than intro since i have to delve into responses for it to make sense imo
+	%	In order to parametrise the functional response for realistic  \cite{Pawar2012} proved invaluable in describing the 
+%\subsection{section layout (old)}
+%	What is an OGM and ontogenic growth?
+%	
+%	An ontogenetic model or OGM is a model which describes the development of an organism.  Within a metabolic framework this describes how an organism's assess to and and alocation of energy changes throughout its lifetime.
+%	
+%	explain west's model
+%	
+%	explain terms 
+%	
+%	why is `a` resting metabolic rate?
+%	
+%	explain charnov's contribution
+%	
+%	- graph with generic example of the plot for illustration purposes
+%	
+%	explain what I am adding to `cm` and why --> maybe leave for the methods?
+%	
+%	talk about barneche 2018
+%	
+%	raises question of scaling elsewhere 
+%	
+%	talk about samraats work and how I plan to use it
+%	
+%	the goal of my paper
 	
 	\nolinenumbers
 	%%%%%%%%%% Methods %%%%%%%%%%
 \section{Methods}
 	\linenumbers
-	\subsection{Gain}
-	
-	\subsection{Loss}
-	\subsubsection{Maintenance Cost}
-	\subsubsection{Reproductive Cost}
-	\subsection{Reproductive Output}
-	
-	\subsection{notes}
-	c bounded between 0 and 1 since it is basically GSI
+%	\subsection{Gain}
+%	
+%	\subsection{Loss}
+%	\subsubsection{Maintenance Cost}
+%	\subsubsection{Reproductive Cost}
+%	\subsection{Reproductive Output}
+%	
+%	\subsection{notes}
+%	c bounded between 0 and 1 since it is basically GSI
 	\nolinenumbers
 	%%%%%%%%%% Results %%%%%%%%%%
 \section{Results}
 	\linenumbers
+	\subsection{tables and figures}
 	
+	\begin{centering}
+
+		{\rowcolors{1}{green!80!yellow!50}{red!220!green!220!yellow!220)}}
+			
+		\begin{table}[h!]
+			\label{parameters}
+			\caption{Table describing parameters used in the model, along with values units and sources where applicable.}
+			\begin{tabular}{c l l l l l}
+				\hline
+				Parameter 	& Description 			& Value 	& Units 	& Range 		& Source \\
+				\hline
+				$m$			& Mass					& ?			& kg day$^{-1}$& -			&		\\
+				
+				$B_m$		& Metabolic Cost		& -			& kg day$^{-1}$& - 			& \cite{Peters1983}\\
+				
+				$\alpha$	& Age of maturity		& -     	& day		& -				& -\\
+				$c$			& Reproduction scaling constant & - & kg day$^{-1}$& 0-1 			& -\\
+				$\rho$		& Reproduction scaling exponent	& -	&	-		& 0-1.5			& -\\
+				$Z$			& Rate of instantaneous mortality& $2/\alpha$	& & & \cite{Charnov2001}\\
+				$k$			& Reproductive senescence & 0.01\\
+				
+				$\epsilon$	& Resource Conversion Efficiency & 0.70 & - & - 		& \cite{Peters1983} \\
+				$X_r$ 		& Resource Density		& -		& kg		& ?				& -\\
+				$\gamma$	& Search rate scaling exponent & 0.68 in 2D	& - & - & \cite{Pawar2012} \\
+							&						& 1.05 in 3D\\
+				$a_0$		& Search rate scaling constant & $10^{-3.08}$ in 2D & m$^2$ s$^{-1}$ kg$^{-0.68}$   & &\cite{Pawar2012}	\\
+							&						& $10^{-1.77}$ in 3D& m$^2$ s$^{-1}$ kg$^{-1.05} $\\
+				$\beta$		& Handling time scaling exponent& 0.75 & - & - & \cite{Pawar2012}\\
+				$t_{h, 0}$	& Handling time scaling constant& $10^{3.95}$ in 2D &kg$^{1-\beta}$ s& -& \cite{Pawar2012}	\\
+							&						& $10^{3.04}$ in 3D			&kg$^{1-\beta}$ s\\
+				\hline
+			\end{tabular}
+		\end{table}
+	\end{centering}
+
 	\nolinenumbers
+	
 	%%%%%%%%%% Discussion %%%%%%%%%%
 \section{Discussion}
 	\linenumbers
 	
 	\nolinenumbers
+	
 	%%%%%%%%%% Conclusion %%%%%%%%%%
 \section{Conclusion}
 	\linenumbers
 	
 	\nolinenumbers
+	
 	%%%%%%%%%% Bibliography %%%%%%%%%%
 	\newpage
 	
-\printbibliography
-
+	\addcontentsline{toc}{section}{\protect\numberline{}References}
+	
+	\linenumbers
+	\printbibliography
+	\nolinenumbers
+	
+	%%%%%%%%%% SI %%%%%%%%%%
+	\newpage
+	\include{SI}
 \end{document}
