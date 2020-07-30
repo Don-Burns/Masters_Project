@@ -12,3 +12,5 @@ rm $1*.gz
 rm $1*.fls
 rm $1*.fdb_latexmk
 rm $1*.synctex.gz
+rm $1*.bcf
+rm $1*.run.xml
