@@ -10,6 +10,7 @@
 from numpy import arange, array
 ##optimisation
 from numpy import unravel_index, argmax, isnan, nan_to_num, zeros, amax, where, zeros_like, around, ravel
+from pandas import unique
 ## maths functions
 from scipy.integrate import odeint 
 from numpy import exp, sin, pi, log10, log
@@ -617,21 +618,28 @@ def reproduction_array(c_vec, rho_vec, m0, R0, time, params, shrinkage = 0, retu
     alpha = params["alpha"]
 
     for i, rho in enumerate(rho_vec):
-        params["rho"] = rho
+        # params["rho"] = rho
         
         for j, c in enumerate(c_vec):
+            params["rho"] = rho
             params["c"] = c
             result = dmdt_integrate(m0, R0, time, params)
             mass = result[:,0]
             repro = result[:,1]
             
-            # check for shrinking
-            if mass[-1] <= mass[alpha]*(1-shrinkage) or mass[0] > mass[-1] or isnan(mass[-1]):
-                mass = zeros_like(mass)
-                repro = zeros_like(repro)#[0]*time#zeros_like(repro)
+            if repro[-1] == 0 or isnan(repro[-1]) or repro[alpha] == 0: # to try stop appearance of non-reproducing values/banding
+                repro_result_array[i,j] = 0
+                mass_result_array[i,j] = 0
             
-            repro_result_array[i,j] = repro[-1]
-            mass_result_array[i,j] = mass[-1]
+            elif mass[-1] <= mass[alpha]*(1-shrinkage) or mass[0] > mass[-1] or isnan(mass[-1]) or 0 in mass:
+                repro_result_array[i,j] = 0
+                mass_result_array[i,j] = 0
+                # mass = zeros_like(mass)
+                # repro = [0]*time#zeros_like(repro)
+            
+            else:
+                repro_result_array[i,j] = repro[-1]
+                mass_result_array[i,j] = mass[-1]
 
     # if return_mass == True:
     #     # to return mass array in case needed instead of repro
