@@ -9,12 +9,13 @@
 ###### Imports ######
 from numpy import arange, array
 ##optimisation
-from numpy import unravel_index, argmax, isnan, nan_to_num, zeros, amax, where, zeros_like
+from numpy import unravel_index, argmax, isnan, nan_to_num, zeros, amax, where, zeros_like, around, ravel
 ## maths functions
 from scipy.integrate import odeint 
 from numpy import exp, sin, pi, log10, log
 ## plotting
 import matplotlib.pyplot as plt
+import seaborn as sb
 
 ###### Functions ######
 
@@ -195,7 +196,7 @@ def plot_hou_simple(m0, time, params):
 
 
 ## Supply Model ##
-def am(m, dimensionality = "3D"):
+def am(m, dimensionality):
     """
     Calculates mass specific search rate in a functional response as derived in 
     Pawar et al 2012.
@@ -210,15 +211,15 @@ def am(m, dimensionality = "3D"):
     """
     if dimensionality == "3D":
         a0 = 10**-1.77  
-        gamma = 1.05 # scarce resources
+        gamma = 1.05 
         return (m**gamma) * a0
 
     if dimensionality == "2D":
         a0 = 10**-3.08 
-        gamma = 0.68 # scarce resources
+        gamma = 0.68 
         return (m**gamma) * a0
 
-def hm(m, dimensionality = "3D"):
+def hm(m, dimensionality):
     """
     Calculates mass specific handling time in a functional response as derived
      in Pawar et al 2012 SI. 
@@ -234,14 +235,14 @@ def hm(m, dimensionality = "3D"):
     """
 
     if dimensionality == "3D":
-        tk0 = 10**3.04  
+        th0 = 10**3.04  
         beta = 0.75 
-        return (m**-beta) * tk0
+        return (m**-beta) * th0
 
     if dimensionality == "2D":
-        tk0 = 10**3.95 
+        th0 = 10**3.95 
         beta = 0.75 
-        return (m**-beta) * tk0
+        return (m**-beta) * th0
 
 def Xrt(t, amp, centre, period = 365):
     
@@ -265,7 +266,7 @@ def Xrt(t, amp, centre, period = 365):
 
     return (amp*centre * sin(x)) + centre
 
-def Fun_Resp(m, Xr, dimensionality = "3D"):
+def Fun_Resp(m, Xr, dimensionality):
     """
     Calculates the functional response of an organism dependent on mass.
 
@@ -285,7 +286,7 @@ def Fun_Resp(m, Xr, dimensionality = "3D"):
     f = (a *Xr) / (1 + a*h*Xr)
     return f
 
-def Bm (m, delta, proportion = 0.05, dimensionality = "2D"):
+def Bm (m, delta, proportion, dimensionality):
     """
     Calculated mass specific metabolic cost based on some percentage 
     of effective intake rate i.e. search rate
@@ -330,8 +331,8 @@ def Bm (m, delta, proportion = 0.05, dimensionality = "2D"):
 def L(t, k = 0.01):
     """
     Suvival Function for reproduction modelled as an exponetially increasing number through time.
-    Based on thinking that most organisms will not live long enough for factors such as 
-    reproductive senescence to be a factor.
+    Based on thinking that most organisms will not live long enough for factors 
+    such as reproductive senescence to be a factor.
 
     Args:
         t (int): Time
@@ -357,7 +358,7 @@ def reproduction(t, c, m, rho, alpha, k = 0.01):
         float: Reproductive output in terms of biomass
 
     """    
-    Z = 2/alpha
+    Z = 2/alpha # instantaneous adult mortality
     Q = L(t-alpha) # juvenile mortality
 
 
@@ -380,16 +381,16 @@ def metabolic_cost(m, meta_exp=0.751):
     # return intercept * m**alpha
 
     # peters book data
-    B_m= 0.14 * m**(meta_exp-1) # J/s
-    B_m = B_m *24*60*60 # J/s --> J/d
-    B_m = B_m *2.5*10**-4 # J/d --> wetmass/d
+    B_m= 0.14 * m**(meta_exp) # J/s 
+    B_m = B_m *24*60*60 # J/s --> J/d 
+    B_m = B_m *2.5*10**-4 # J/d * kg wetmass/J --> wetmass/d
 
     return B_m
 
 def dmdt(mR0, t, 
          alpha, epsilon, norm_const, meta_prop, meta_exp, 
          c, rho, 
-         Xr, amp, period, dimensionality = "3D"):
+         Xr, amp, period, dimensionality):
     """
     Calculates the instantaneous change in mass at time `t`. 
 
@@ -406,7 +407,69 @@ def dmdt(mR0, t,
         c (float): Metabolic cost constant
         rho (float): Metabolic cost exponent
         Xr (float): The expected median value for resource density
-        amp (float): amplitude of resource fluctuation around `Xr`
+        amp (float): amplitude of resource fluctuation around `Xr`, 
+                        set to 0 to disable fluctuation
+        period (int): the period (duration) of the resource cycle
+        dimensionality (str): See `Func_Resp`
+
+
+    Returns:
+        float: change in mass (dm/dt) at time t
+    """
+    # ensure dimensionality is correct for norm_const
+    norm_const = epsilon * Fun_Resp(1, 10**6, dimensionality) *60*60*24
+
+    # check if individual is at/past maturation
+    m, R = mR0
+    k = 0.01 #  reproductive senesence
+    if t < alpha:
+        R = 0 # reproductive cost
+        repro = 0 # reproductive output
+    if t >= alpha:
+        R = c * norm_const * (m**rho) # kg/d
+        repro = reproduction(t, c*norm_const, m, rho, alpha, k = 0.1)
+
+    # Gain
+    Xr_t = Xrt(t, amp, Xr, period)
+    gain = epsilon * Fun_Resp(m, Xr, dimensionality) # kg/s
+    gain = gain * (60 * 60 * 24)# /s -> /min -> /hour -> /day
+    # Loss
+    # B_m  = norm_const * meta_prop * m**meta_exp # metabolic as% of consumption
+    B_m = metabolic_cost(m, meta_exp) #* norm_const
+    loss = B_m + R
+    
+    dmdt =  gain - loss
+    
+    # check for shrinking
+    if dmdt + m < 0:
+        dmdt = -m
+
+        
+    return array([dmdt, repro])
+    
+
+def dmdt_test(t, mR0,
+         alpha, epsilon, norm_const, meta_prop, meta_exp, 
+         c, rho, 
+         Xr, amp, period, dimensionality):
+    """
+    Calculates the instantaneous change in mass at time `t`. for use with sol_ivp from scipy
+
+    Args:
+        m (float): Mass of individual
+        t (int): time
+        alpha (int): maturation time
+        epsilon (float): Efficiency term
+        norm_const (float) : Normalisation constant, 
+                            i.e. Functional response value for a 1kg organism
+        meta_prop (float) : Proportion of optimum intake rate that 
+                            is assigned to metabolism
+        meta_exp (float) : Scaling exponent for metabolism
+        c (float): Metabolic cost constant
+        rho (float): Metabolic cost exponent
+        Xr (float): The expected median value for resource density
+        amp (float): amplitude of resource fluctuation around `Xr`, 
+                        set to 0 to disable fluctuation
         period (int): the period (duration) of the resource cycle
         dimensionality (str): See `Func_Resp`
 
@@ -430,8 +493,8 @@ def dmdt(mR0, t,
     gain = epsilon * Fun_Resp(m, Xr, dimensionality) # kg/s
     gain = gain * (60 * 60 * 24)# /s -> /min -> /hour -> /day
     # Loss
-    # B_m  = norm_const * meta_prop * m**meta_exp # metabolic as% of consumption
-    B_m = metabolic_cost(m, meta_exp) #* norm_const
+    B_m  = norm_const * meta_prop * m**meta_exp # metabolic as% of consumption
+    # B_m = metabolic_cost(m, meta_exp) #* norm_const
     loss = B_m + R
     
     dmdt =  gain - loss
@@ -497,13 +560,13 @@ def plot_supply(m0, R0, time, params):
 
     t = arange(0, time, 1)
 
-    plt.figure()
+    # plt.figure()
     plt.plot(t, m, label="Mass") #change dimensions from col to row
     plt.plot(t, repro, label="Reproductive Output") 
     plt.xlabel("Time")
     plt.ylabel("Mass")
     plt.legend()
-    plt.show()
+    # plt.show()
     
     return mR
        
@@ -523,15 +586,29 @@ def find_max(arr):
 
     """
 
-    max_ind = unravel_index(argmax(arr, axis=None), arr.shape)
-    # max_ind = where(arr == amax(arr))
+    # max_ind = unravel_index(argmax(arr, axis=None), arr.shape)
+    max_ind = where(arr == amax(arr))
 
     return max_ind
 
-def find_optimum(c_vec, rho_vec, m0, R0, time, params):
-# do the c and rho vectors as a meshgrid 
-# this should speed it up 
-# from there the same as the notebook with all the debugging left to do
+def reproduction_array(c_vec, rho_vec, m0, R0, time, params, shrinkage = 0, return_mass=False):
+    """[summary]
+
+    Args:
+        c_vec ([type]): [description]
+        rho_vec ([type]): [description]
+        m0 ([type]): [description]
+        R0 ([type]): [description]
+        time ([type]): [description]
+        params (dict): See `dmdt`
+        return_mass (bool) : Set true to return array of produced final masses. instead of reproduction.  Defaults to `False`.
+        shrinkage (float) : the amount of shrinkage allowed after maturation (alpha). Defaults to 0
+    Returns:
+        [type]: [description]
+    """
+    # do the c and rho vectors as a meshgrid 
+    # this should speed it up 
+    # from there the same as the notebook with all the debugging left to do
 
     repro_result_array = zeros((len(rho_vec), len(c_vec)))
     mass_result_array = zeros_like(repro_result_array)
@@ -549,22 +626,111 @@ def find_optimum(c_vec, rho_vec, m0, R0, time, params):
             repro = result[:,1]
             
             # check for shrinking
-            if mass[-1] < mass[alpha] or mass[0] > mass[-1] or isnan(mass[-1]):
+            if mass[-1] <= mass[alpha]*(1-shrinkage) or mass[0] > mass[-1] or isnan(mass[-1]):
                 mass = zeros_like(mass)
-                repro = zeros_like(repro)
+                repro = zeros_like(repro)#[0]*time#zeros_like(repro)
             
             repro_result_array[i,j] = repro[-1]
             mass_result_array[i,j] = mass[-1]
 
+    # if return_mass == True:
+    #     # to return mass array in case needed instead of repro
+    #     return mass_result_array 
+    # else:
+    #     return repro_result_array
+    return repro_result_array
+
+def find_optimum(c_vec, rho_vec, m0, R0, time, params, shrinkage = 0):
+    """[summary]
+
+    Args:
+        c_vec ([type]): [description]
+        rho_vec ([type]): [description]
+        m0 ([type]): [description]
+        R0 ([type]): [description]
+        time ([type]): [description]
+        params ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """    
+
+    repro_result_array = reproduction_array(c_vec, rho_vec, m0, 
+                                            R0, time, params, shrinkage=shrinkage)
     # find optimum values
-    max_ind = where(repro_result_array == amax(repro_result_array))
-    # max_ind = find_max(repro_array) # finds only first max value
-    max_repro = repro_result_array[max_ind]
+    # max_ind = where(repro_result_array == amax(repro_result_array))
+    max_ind = find_max(repro_array) 
+    # max_repro = repro_result_array[max_ind] # unneccessary call
     i, j = max_ind
     c_opt = c_vec[j]
     rho_opt = rho_vec[i]
 
     return array([c_opt, rho_opt])
+
+def plot_optimum(c_vec, rho_vec, m0, R0, time, params, shrinkage = 0):
+    """[summary]
+
+    Args:
+        c_vec ([type]): [description]
+        rho_vec ([type]): [description]
+        m0 ([type]): [description]
+        R0 ([type]): [description]
+        time ([type]): [description]
+        params ([type]): [description]
+
+    Returns:
+        [type]: [description]
+    """
+
+    # find resolution of the parameter space scanning
+    resolution = c_vec[1] - c_vec[0] 
+
+    #find optimum rho and c values
+    repro_array = reproduction_array(c_vec, rho_vec, m0, R0, time, params, shrinkage=shrinkage)
+    max_ind = find_max(repro_array)
+    i, j = max_ind
+    c_opt = c_vec[j]
+    rho_opt = rho_vec[i]
+    
+    #assign optimum rho and c
+    params["c"] = c_opt[0] # need to call element for growth curve plot
+    params["rho"] = rho_opt[0]
+
+    ## plot the result
+    #heatmap
+    #tick labels
+    c_labels = [i if i in around(arange(0, max(c_vec), 0.1), decimals=1) 
+                else None for i in around(c_vec, decimals=2)]
+                
+    rho_labels = [i if i in around(arange(0, max(rho_vec), 0.2), decimals=1)
+                else None for i in around(rho_vec, decimals=2)]
+
+    ax = sb.heatmap(repro_array,
+            xticklabels = c_labels, 
+            yticklabels= rho_labels, linewidths=0.0,rasterized=True).invert_yaxis() # linewidths and rasterized to stop gridlines whens saved as pdf
+    #scale circle for highest value with resolution of heatmap
+    offset = resolution *5 
+    size = resolution * 2000 #figsize[1] / 6.4
+    # circle highest value
+    plt.scatter(j+offset, i+offset, s=size, linewidth=3, 
+                facecolors='none', edgecolors='c' )
+    plt.ylabel("rho")
+    plt.xlabel("c")
+    plt.title("Reproductive Output (kg)")
+    
+    # add small plot to top right corner
+    # sub = plt.axes([.65, .6, .2, .2], facecolor = "w")
+    # plot_supply(m0, R0, time, params)
+
+    # # growth curve
+    # plt.subplot(2,1,2)
+    # mR =  plot_supply(m0, R0, time, params)
+    # mass = mR[:,0]
+    # repro = mR[:,1]
+    
+    return array([c_opt,rho_opt])
+
+
 ###### Classes ######
 
 
