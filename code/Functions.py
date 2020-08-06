@@ -621,7 +621,7 @@ def reproduction_array(c_vec, rho_vec, m0, R0, time, params, shrinkage = 0, retu
         # params["rho"] = rho
         
         for j, c in enumerate(c_vec):
-            params["rho"] = rho
+            params["rho"] = rho # need to assign within this loop or it causes assignment issues
             params["c"] = c
             result = dmdt_integrate(m0, R0, time, params)
             mass = result[:,0]

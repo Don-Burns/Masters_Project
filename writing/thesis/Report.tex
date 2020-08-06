@@ -33,6 +33,7 @@ url=false, isbn=false]{biblatex}
 %%%%%%%%%% Bibliography %%%%%%%%%%
 \addbibresource{../Masters_Thesis.bib}
 
+%commands 
 
 %%%%%%%%%% Document %%%%%%%%%%
 \begin{document}
@@ -42,7 +43,15 @@ url=false, isbn=false]{biblatex}
 	%%%%%%%%%% Abstract %%%%%%%%%%
 	\section*{Abstract}
 	\linenumbers
-	Size is essential to reproductive output and by extension understanding growth, determines size allows understanding of reproductive output.  With recent results showing that reproduction in fish scales hyperallometrically there is a need to update growth OGMs to reflect this fact.  Current OGMs assume optimal intake, an assumption which is not always reflected in the field.  This study develops an energy supply focused approach to explaining growth, an area which has not been covered within current literature, and uses the output to determine whether it is intake or maintenance which may be giving rise to hyperallometric scaling of reproduction in fish.
+%	Size is essential to reproductive output. By extension understanding growth, determines size allows understanding of reproductive output. 
+	 
+	With recent results showing that reproduction in fish scales hyperallometrically there is a need to update growth OGMs to reflect this fact.  Current OGMs assume optimal intake, an assumption which is not always reflected in the field.  This study develops an energy intake focused approach to explaining growth, an area which has not been covered within current literature, and uses the output to determine whether it is intake or maintenance scaling which may be giving rise to disproportional reproductive output in fish.
+	
+	
+%	pieces to include:
+%	
+%	show the effects of the exponenet and why it is important that we use the correct one moving forward.
+%	give direction as to what needs to be done going forward.  what areas need work
 	
 	
 	\nolinenumbers
@@ -119,7 +128,12 @@ url=false, isbn=false]{biblatex}
 	% describe basic OGM and how i change the intake term to reflect supply
 	
 %	\cite{Sibly2020} % for metabolic scaling
-%	\cite{Marshall2019} non-isometric scaling of repro
+%	\cite{Marshall2019} non-isometric scaling of repro#
+
+% questions
+% what effect does exponent actually have in relation to growth
+% what coditions need to be fuflilled to possibly acheive hyperallometry
+% 
 	\nolinenumbers
 	
 	%%%%%%%%%% Methods %%%%%%%%%%
@@ -127,7 +141,7 @@ url=false, isbn=false]{biblatex}
 	\linenumbers
 	
 	\subsection{Redefining OGMs to account for supply}
-	In order to address the issue of supply in the context of an OGM, which can be generically described as $dm/dt = gain - loss$, some changes need to be made to the model's terms.  The first is to remove the assumption of asymptotic mass and the reliance of cost upon.  Within a tradional OGM $ a $, the gain term, and asymptotic mass are used to define the metabolic cost $ b $.  However, since the assumption of perfect intake is going to be broken this relationship no longer holds.  As such, both intake and metabolic cost need to be redefined.  Additionally, in light of recent work showing that reproduction scales allometrically and not isometrically, the reproductive cost must also be modified from the form used by \citeauthor{Charnov2001} (\citeyear{Charnov2001}) \parencite{Marshall2019, Barneche2018} %check marshal ref data origin
+	In order to address the issue of supply in the context of an OGM, which can be generically described as $dm/dt = gain - loss$, some changes need to be made to the model's terms.  The first is to remove the assumption of asymptotic mass and the reliance of cost upon it.  Within a tradional OGM the gain term ($ a $) and asymptotic mass are used to define the metabolic cost ($ b $).  However, since the assumption of perfect intake is going to be broken, because of the variable supply, this relationship no longer holds.  As such, both intake and metabolic cost need to be redefined.  Additionally, in light of recent work showing that reproduction scales allometrically and not isometrically, the reproductive cost must also be modified from the form used by \citeauthor{Charnov2001} (\citeyear{Charnov2001}) \parencite{Marshall2019, Barneche2018} %check marshal ref data origin
 	
 	
 	\subsubsection{Redefining Gain}
@@ -137,9 +151,11 @@ url=false, isbn=false]{biblatex}
 		f(\cdot) = \frac{a X_r}{1 + a h X_r}
 	\end{equation}
 	where, $ f(\cdot) $ is the functional response, $ a $ is the search rate, $ h $ is handling time and $ X_r $ is resource density.  
-	For a fixed mass Eq \ref{functional_repsonse} produces a sigmoidal shape with intake eventually reaching an asymptote after some saturating amount of resources is reached.  At lower resource densities, the intake rate is primarily defined by the search rate with higher search rates yielding higher intake rates.  Conversely, at high / saturating resource densities, intake rate is approximately equal to the inverse of the handling time, where lower handling times yield higher intake rates.  
+	For a fixed mass and increasing resource density Eq \ref{functional_repsonse} produces a sigmoidal shape with intake eventually reaching an asymptote after some saturating amount of resources is reached.  At lower resource densities, the intake rate is primarily defined by the search rate with higher search rates yielding higher intake rates.  Conversely, at high resource densities, intake rate is approximately equal to the inverse of the handling time ($ h^{-1} $), where lower handling times yield higher intake rates.  
 	
-	An organism's functional response will not remain constant throughout its life history.  Search rate and handling time are affected by both the organism's mass and how it interacts with its environment \parencite{Pawar2012}.  Within this model mass will be known for all time points since that is one of the quantities being predicted.  Interactions can be broken into 3D and 2D, that is whether the organism consumes from a 2D "surface" e.g. grass grazers or a 3D "volume" e.g. a pelagic consumer which consumes prey from within the water column.  As such, both handling time and search rate can be defined as Eq. \ref{handling_time} and Eq. \ref{search_rate} respectively.
+	An organism's functional response will not remain constant throughout its life history.  Search rate and handling time are affected by both the organism's mass and how it interacts with its environment \parencite{Pawar2012}.  
+%	Within this model mass will be known for all time points since that is one of the quantities being predicted.  
+	Interactions can be broken into 3D and 2D, that is whether the organism consumes from a 2D "surface" e.g. a cow grazing or a 3D "volume" e.g. a pelagic consumer which consumes prey from within the water column.  As such, both handling time and search rate can be defined as Eq. \ref{handling_time} and Eq. \ref{search_rate} respectively.
 	\begin{equation}
 		\label{search_rate}
 		a(m) = a_0 m_t^\gamma
@@ -149,7 +165,7 @@ url=false, isbn=false]{biblatex}
 		\label{handling_time}
 		h(m) = t_{h,0} m_t^\beta
 	\end{equation}
-	A functional response alone is not enough to fully define intake.  This is because processing of consumed resources is not one hundred percent efficient which leads to inevitable loss what is consumed.  As a result, to achieve the final gain term, a dimensionless efficiency term $\epsilon$ is applied.  In poikilotherms efficiency is roughly 70\% \parencite{Peters1983}
+	A functional response alone is not enough to fully define intake.  This is because processing of consumed resources is not one hundred percent efficient which leads to inevitable loss consumed energy.  As a result, to achieve the final gain term, a dimensionless efficiency term $\epsilon$ is applied.  In poikilotherms efficiency is roughly 70\% \parencite{Peters1983}
 	
 	\subsubsection{Redefining Loss}
 	Metabolic cost  has previously been dependant upon the gain term within traditional OGMs (see \cite{West2001, Hou2008}).  However, for non-maximal intake the relationship will no longer hold true.  As a result, this model has taken previously measured values to be used as metabolic cost (see Eq. \ref{metabolic_cost} taken from \cite{Peters1983} and Table \ref{parameters} for further details)
@@ -157,10 +173,10 @@ url=false, isbn=false]{biblatex}
 		\label{metabolic_cost}
 		B_m = 0.14 m_t^\mu
 	\end{equation}
-	Next to take allometric scaling of reproduction into account, the reproductive cost term from \citeauthor{Charnov2001} (\citeyear{Charnov2001}) is changed from $cm^1$ which assumes isometric scaling to $cm^\rho$.  $c$ can be interpreted as the proportion of mass dedicated to reproduction, i.e. the gonadosomatic index (GSI) of the fish \parencite{Charnov2001}.  Just as in \citeauthor{Charnov2001} (\citeyear{Charnov2001}) reproductive cost is only taken into account once maturity is reached.  Meaning that until a length of time $\alpha$ has passed, reproductive cost is considered to be zero.
+	Next to take allometric scaling of reproduction into account, the reproductive cost term from \citeauthor{Charnov2001} (\citeyear{Charnov2001}) is changed from $cm^1$ which assumes isometric scaling to $cm^\rho$.  $c$ can be interpreted as the proportion of mass dedicated to reproduction, i.e. the gonadosomatic index (GSI) of the fish \parencite{Charnov2001}.  Just as in \citeauthor{Charnov2001} (\citeyear{Charnov2001}) reproductive cost is only taken into account once maturity is reached.  Meaning that until a length of time ($\alpha$) has passed, reproductive cost is considered to be zero.
 	
 	\subsubsection{Full Growth Equation}
-	When all newly defined terms are taken together they produce Eq. \ref{dmdt_juvenile}  and \ref{dmdt_mature} which describe the change in mass for a fish before and after maturation.
+	When all newly defined terms are taken together they produce Eq. \ref{dmdt_juvenile}  and \ref{dmdt_mature} which describe the change in mass for a fish before (Eq. \ref{dmdt_juvenile}) and after maturation (Eq. \ref{dmdt_mature}).
 	\begin{align}
 		\label{dmdt_juvenile}
 		\frac{dm}{dt} &= \epsilon f(\cdot) - B_m & m_t < m_\alpha \\
@@ -171,14 +187,14 @@ url=false, isbn=false]{biblatex}
 	
 	
 	\subsection{Estimating Reproductive Output}
-	At any time $ t $, a reproducing organism devotes some amount of energy to reproduction.  This is the product between the amount of mass dedicated to reproduction, $ cm^\rho $, and a declining efficiency term, $ h_t $, which begins at maturity, $ \alpha $, and represents reproductive senescence \parencite{Benoit2018, Vrtilek2018, Stearns2000}.  In addition to amount of reproduction, the offspring are also subject to mortality, $ l_t $.  By combining the two, lifetime reproductive output can be estimated and is described by the "characteristic equation" (see Eq. \ref{characteristic_equation}) which represents reproductive output in a non-growing population \parencite{Tsoukali2016, roff1993, Roff2001, stearns1992evolution, Arendt2011, Roff1986, Roff1984}
+	At any time ($ t $) a reproducing organism devotes some amount of energy to reproduction.  This is the product between the amount of mass dedicated to reproduction ($ cm^\rho $) and a declining efficiency term ($ h_t $) which begins at maturity ($ \alpha $) and represents reproductive senescence \parencite{Benoit2018, Vrtilek2018, Stearns2000}.  In addition to amount of reproduction, the offspring are also subject to mortality ($ l_t $).  By combining the two, lifetime reproductive output can be estimated and is described by the "characteristic equation" (Eq. \ref{characteristic_equation}) which represents reproductive output in a non-growing population \parencite{Tsoukali2016, roff1993, Roff2001, stearns1992evolution, Arendt2011, Roff1986, Roff1984}
 	\begin{equation}
 		\label{characteristic_equation}
 		R_0 = \int c m_t^\rho h_t l_t 
 	\end{equation}
 	Mortality is experienced differently by juvenile ($ t < \alpha $) and reproducing individuals ($ t \leq \alpha $). % <-dont like this sentence
 	Mortality of offspring prior to maturity is described as a survival rate $ l_t = e^{-Z(t)} $ which is an exponentially decreasing function bounded between zero and one.  It controls how many offspring make it to maturity.  After maturity, survival is again described as an exponential function which takes time to maturity into account, $ l_t = e^{-Z(t-\alpha)} $.  
-	Reproductive senescence is can be also be estimated as an exponential function which declines over time only starting after maturity ($ e^{-k(t-\alpha)} $).  When all values are inserted into the characteristic equation it results in Eq. \ref{reproductive_output} which the equation used by \citeauthor{Charnov2001} (\citeyear{Charnov2001}) with the the inclusion of reproductive senescence.
+	Reproductive senescence can be also be estimated as an exponential function which begins after maturity and declines over time  ($ e^{-k(t-\alpha)} $), where $ k $ is the senescence term.  When all values are inserted into the characteristic equation, it results in the equation used by \citeauthor{Charnov2001} (\citeyear{Charnov2001}) with the inclusion of reproductive senescence (Eq. \ref{reproductive_output}).
 	\begin{equation}
 		\label{reproductive_output}
 		R_0 = c\int_0^\alpha e^{-Z_t} dt  \int_\alpha^\infty m_t^\rho e^{-(\kappa + Z)(t - \alpha)}dt\\
@@ -188,12 +204,12 @@ url=false, isbn=false]{biblatex}
 	\subsection{Maximising Reproduction}
 	It is assumed that evolution will converge on metabolic values which maximise fitness. 
 	Fitness being defined as how much an individual is able to contribute to the gene pool \parencite{Speakman2008, Stearns2000}.  % Would like to remove this and link more smoothly
-	To this end, lifetime reproductive output is often used as a measure of fitness \parencite{Charnov1991, Audzijonyte2018, Speakman2008, Stearns2000, Charnov2001, Tsoukali2016, Brown1993, Charnov2007}.  Therefore, by maximising for reproductive output, it should become clear what parameters will yield the highest fitness and, if later proven to be different, hints that there is some mechanism that is not accounted for within the model. %last clause a bit dodge
+	To this end, lifetime reproductive output is often used as a measure of fitness \parencite{Charnov1991, Audzijonyte2018, Speakman2008, Stearns2000, Charnov2001, Tsoukali2016, Brown1993, Charnov2007}.  Therefore, by maximising for reproductive output, it should become clear what parameters will yield the highest fitness.  These parameters will then show whether, within a theoretical framework, hyperallometric scaling arises.
 	
-	To find all optimal values for reproduction would require Eq. \ref{reproductive_output} to analytically solved.  However, since no such solution is possible, I simulated the problem numerically to obtain a result.  This was done by simulating across values of $ c $ and $ \rho $, the parameters of interest between growth (Eq. \ref{dmdt_juvenile} and \ref{dmdt_mature}) and reproductive output (Eq. \ref{reproductive_output}).  As $ c $ is GSI, it was bound between 0 and 0.5, which encapsulates the values measured within fish \parencite{Benoit2018, Roff1983, Fontoura2009}.  To search for any hyperallometry within reproduction, $ \rho $ was bound between 0 and 1.5.  
-	The simulation was then run at 0.01 value intervals in both $c$ and $\rho$ over a lifespan of one million days.  The results of each simulation were recorded and any non-viable results were discarded.  A result was considered non-viable if fish had "shrunk" past a given threshold in order to accommodate reproductive costs.  That is the combined loss of energy to metabolism and reproduction is too much for the simulated values at the mass achieved by maturation so the individual must shrink to accommodate the new cost.
+	To find all optimal values for reproduction would require Eq. \ref{reproductive_output} to analytically solved.  However, since no such solution is possible, I simulated the problem numerically to obtain a result.  This was done by simulating across values of $ c $ and $ \rho $, the parameters of interest between growth (Eq. \ref{dmdt_juvenile} and \ref{dmdt_mature}) and reproductive output (Eq. \ref{reproductive_output}).  As $ c $ is GSI, it was bound between 0 and 0.5, which encapsulates the values measured within fish \parencite{Benoit2018, Roff1983, Fontoura2009}.  To search for any hyperallometry within reproduction, $ \rho $ was bound between 0 and 2.  
+	The simulation was then run at 0.01 value intervals in both $c$ and $\rho$ over a lifespan of one million days.  The results of each simulation were recorded and any non-viable results were discarded.  A result was considered non-viable if fish had "shrunk" more than 30\% in order to accommodate reproductive costs.  Shrinking occurs because  the combined loss of energy to metabolism and reproduction is too much for the simulated values at the mass achieved by maturation so the individual experiences a deficit of energy, which is paid by loss in mass until equilibrium is achieved.
 	
-	\subsection{messing with params a.k.a. answering my questions}
+	\subsection{answering my questions}
 
 	exponents
 	
@@ -210,7 +226,13 @@ url=false, isbn=false]{biblatex}
 	\linenumbers
 %	\subsection{notes}
 %		scenesence not much of a factor
-	\newpage
+% 10 \% predicted under Roff 1983
+
+
+	\subsection{Resources}
+	minimum viable resource is dependent upon meta.exp, with 0.75 allowing for less than that of 1 and scaling in between 0.2 for 1 and 0.15 for 0.75. likewise 3D is capable of going lower than 2D due to the higher intake rate.  shrinkage plays no role here.
+	
+
 	\subsection{tables and figures}
 	
 	\begin{centering}
@@ -249,31 +271,64 @@ url=false, isbn=false]{biblatex}
 	\end{centering}
 
 	\begin{figure}[h!]
-		\caption{Multiplot with 2D vs 3D and varying resource densities.}
-		\label{resources}
 		
-		\includegraphics[width=0.5\textwidth]{../../results/HighLow_3D2D.pdf}
 		
+		
+		\includegraphics[width=\textwidth]{../../results/report_3D2D_HighLowRes.pdf}
+		
+		\caption{Multiplot with 2D vs 3D and varying resource densities. The optimal value is denoted by the blue circle.
+		The resources used for the low resource scenario (top row) is the minimum amount of resources that allows growth with a $c$ and $\rho$ of 0.01.  As would be expected, since has steeper scaling, 3D allows for growth at smaller resource densities than 2D.
+		Low reources in 2D were $ \approx 0.1kg/m^2 $ and $ 0.00035kg/m^2 $ in 3D.
+		$ 100kg/m^2 $ was used for high resources because, which although unrealistic, ensures that resources are not a limiting factor in the simulations.
+		Hyperallometric scaling is observed in 2D ($\rho = 1.64$ at high resources and 1.99 at low resources (NOTE: This is because 2 is the upper limit of $\rho$ I have simulated here). 
+		Scaling in 3D is slightly hypoallometric $rho = 0.94$ and c = 0.01 at high resources. $\rho = 0.8$ and $c = 0.01$ at low resources
+		The metabolic scaling exponent = 1 in all cases}
+		\label{resources2D3D}
 	\end{figure}
 	
 	
 	\begin{figure}[h!]
-		\caption{Multiplot with 2D vs 3D and changing exponents, likely range from 0.75 to ~0.85}
-		\label{exponents}
 		
-		\includegraphics[width=0.5\textwidth]{../../results/meta_exp_3D2D.pdf}
+		\includegraphics[width=\textwidth]{../../results/report_2D_exponents.pdf}
 		
+		\caption{Multiplot with changing metabolic exponents in 2D, ranging from 0.75 to 1, resource density = 0.01, time to maturation is 5 years.  
+		It can be seen that higher metabolic responses limit the proportion of mass that can be dedicated to reproduction.  However, in exchange, they allow for much steeper scaling.  A patter which is mirrored in 2D and 3D (fig. \ref{exponents3D})}
+		\label{exponents2D}
 	\end{figure}
 		
+		\begin{figure}[h!]
 		
-	\begin{figure}[h!]
-		\caption{Multiplot with 2D vs 3D and changing Maturation Times. Shows that maturation time affects how large the individual can grow.  In combination with \ref{exponents}, final size is restricted by maturation time and times where maturation can occur are restricted by metabolic exponent}
-		\label{maturation}
 		
-		\includegraphics[width=0.5\textwidth]{../../results/alphas_3D2D.pdf}
 		
+		\includegraphics[width=\textwidth]{../../results/report_3D_exponents.pdf}
+		
+		\caption{Multiplot with changing exponents in 3D, ranging from 0.75 to 1, resource density = 0.01, alpha is 5 years. See fig \ref{exponents2D} for explanation. (NOTE: either 2D or 3D likely belongs in SI) } %either of these likely belong in SI.
+		\label{exponents3D}
 	\end{figure}
+		
 	
+	\begin{figure}
+		
+		\includegraphics[width=\textwidth]{../../results/report_growth_curve.pdf}
+		\caption{The growth over a fish which consumes in 2D.  Maturation occurs at 5 years (1825 days).  The fish was allowed to shrink by 30\% at the onset of reproduction.}
+		\label{growth_curve}
+	\end{figure}
+
+%	\begin{figure}[h!]
+%		
+%		\label{maturation_2D}
+%		
+%		\includegraphics[width=0.5\textwidth]{../../results/report_2D_alphas.pdf}
+%		\caption{Multiplot changing maturation times in 2D. Nothing of note here really since the shrinkage just allows for the same values to appear once it has fully grown}
+%	\end{figure}
+%	
+%		\begin{figure}[h!]
+%		
+%		\label{maturation2D3D}
+%		
+%		\includegraphics[width=0.5\textwidth]{../../results/alphas_3D2D.pdf}
+%		\caption{Multiplot with 2D vs 3D and changing Maturation Times. Shows that maturation time affects how large the individual can grow.  In combination with \ref{exponents}, final size is restricted by maturation time and times where maturation can occur are restricted by metabolic exponent}
+%	\end{figure}
 	\nolinenumbers
 	
 	%%%%%%%%%% Discussion %%%%%%%%%%
@@ -283,7 +338,8 @@ url=false, isbn=false]{biblatex}
 	
 	
 	\nolinenumbers
-	
+%	\subsection{notes}
+%	there are some integration issues that could allow for the appearance of more possible values
 	%%%%%%%%%% Conclusion %%%%%%%%%%
 \section{Conclusion}
 	\linenumbers
