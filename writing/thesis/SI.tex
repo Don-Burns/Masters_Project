@@ -1,6 +1,85 @@
+%to have table and figures numbered from 1 with prefix
+\newcommand{\beginsupplement}{%
+	\addcontentsline{toc}{section}{\protect\numberline{}Supplementary Information}
+	\setcounter{table}{0}
+	\renewcommand{\thetable}{S\arabic{table}}%
+	\setcounter{figure}{0}
+	\renewcommand{\thefigure}{S\arabic{figure}}%
+}
 
 \section*{Supplementary Information}
-\addcontentsline{toc}{section}{\protect\numberline{}Supplementary Information}
+\beginsupplement
 
-\subsection{notes}
-	need section on value conversions and derivations
+\subsection*{notes}
+need section on value conversions and derivations
+
+move any unreferenced sensitivity analyses here.
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{../../results/Sens_Maturation_Time_Long}
+	\caption{Long time scale maturation time}
+	\label{fig:sensmaturationtimelong}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{../../results/Sens_Maturation_Time_short}
+	\caption{Short time scale maturation time}
+	\label{fig:sensmaturationtimeshort}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{../../results/Sens_Low_Resources_Maturation_Time_short}
+	\caption{Low Resources Maturation}
+	\label{fig:senslowresourcesmaturationtimeshort}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{../../results/Sens_Metabolic_Exponent}
+	\caption{High Resources Metabolic Exponent}
+	\label{fig:sensmetabolicexponent}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{../../results/Sens_Low_Resources_Metabolic_Exponent}
+	\caption{Low Resource Metabolic Exponent}
+	\label{fig:senslowresourcesmetabolicexponent}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{../../results/Sens_Resource_Density}
+	\caption{Large scale Resource Resource Density}
+	\label{fig:sensresourcedensity}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{../../results/Sens_Low_Resources_Resource_Density}
+	\caption{Fine scale resource Density}
+	\label{fig:senslowresourcesresourcedensity}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{../../results/Sens_Shrink}
+	\caption{High Resources Shrinking}
+	\label{fig:sensshrink}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{../../results/Sens_Low_Resources_Shrink}
+	\caption{Low resources shrinking, missing values around 0 are because no viable solutions could be found.}
+	\label{fig:senslowresourcesshrink}
+\end{figure}
+
+
+
+
+	
+
