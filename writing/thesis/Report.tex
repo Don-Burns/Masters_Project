@@ -7,12 +7,12 @@
 \usepackage{epstopdf} % to allow use of crest in title page
 \usepackage{graphicx}
 \usepackage[mathlines]{lineno}%line numbers
-
+\usepackage{textcomp} % for degree symbol
 %biblatex
 %			compiler		style				max intext names	maxinbib names  
 \usepackage[backend=biber, style=authoryear-comp, maxcitenames=2, maxbibnames=10,
 %sirnames same add initial  names same add next author
-uniquename=true, 			uniquelist=true, 
+uniquename=false, 			uniquelist=false, 
 %no urls	no isbn	
 url=false, isbn=false]{biblatex}
 \DeclareDelimFormat{nameyeardelim}{\addcomma\space} % get commas between author and year
@@ -39,19 +39,32 @@ url=false, isbn=false]{biblatex}
 \begin{document}
 	%%%%%%%%%% Title Page %%%%%%%%%%
 	\include{title_page}
+	
 
+	%%%%%%%%%% Declaration %%%%%%%%%%
+	\section*{Declaration}
+	I declare this project as my own work.  The model presented here was developed in conjunction with my supervisor, Dr. Samraat Pawar, and Ph.D. students Tom Clegg and Olivia Morris.  I was responsible for any simulations and data presentation.\newline
+	%% word count
+	\textbf{Word Count: \wordcount}
+
+	\newpage
+	
 	%%%%%%%%%% Abstract %%%%%%%%%%
 	\section*{Abstract}
 	\linenumbers
 %	Size is essential to reproductive output. By extension understanding growth, determines size allows understanding of reproductive output. 
 	 
 	With recent results showing that reproduction in fish scales hyperallometrically there is a need to update growth OGMs to reflect this fact.  Current OGMs assume optimal intake, an assumption which is not always reflected in the field.  This study develops an energy intake focused approach to explaining growth, an area which has not been covered within current literature, and shows that hyperallometric scaling of reproductive output arises when allowing for variable reproductive scaling and maximising for fitness.  The model is applicable to not only fish, but any animals taxon with some simple parameter adjustments.  I offer direction for improvements and areas to be developed in order to allow the model to be applicable to any temperature range.
-	
-	
+	\vspace*{0.5 cm}
+	\newline
 %	TODO pieces to include:
 %	
 %	show the effects of the exponent and why it is important that we use the correct one moving forward.
 %	give direction as to what needs to be done going forward.  what areas need work
+	%TODO KEywords
+	\textbf{Keywords:}\\
+	allometry; functional response; metabolic theory; growth; intake; life history; metabolism; reproduction; reproductive output; supply
+
 	
 	
 	\nolinenumbers
@@ -98,7 +111,7 @@ url=false, isbn=false]{biblatex}
 	The von Bertalanffy growth equation relies on knowing the longest a fish can be and the length of the fish at the beginning of measurements \parencite{vonBertalanffy1938, Putter1918}.  From here, for a known growth rate, the length of the fish after a set amount of time has passed can be predicted.
 	
 	%OGMs
-	Another approach has been to try explain growth from an energetic perspective.  That is an individuals growth is determined by the amount of energy available to it.  Once all costs, such as maintenance, have been paid all remaining energy can be invested towards growth.  There are two frameworks which have been built around this concept; dynamic energy budget (DEB) theory% TODO get ref for DEB original/important sources %add note to see discussion for more on DEB?
+	Another approach has been to try explain growth from an energetic perspective.  That is an individuals growth is determined by the amount of energy available to it.  Once all costs, such as maintenance, have been paid all remaining energy can be invested towards growth.  There are two frameworks which have been built around this concept; dynamic energy budget (DEB) theory % TODO get ref for DEB original/important sources %add note to see discussion for more on DEB?
 	and ontogenetic growth models (OGMs), which will be focused on here.
 
 	%	introduce \cite{West2001}	
@@ -107,9 +120,9 @@ url=false, isbn=false]{biblatex}
 	% talk about determinant and indeterminant growth/
 	
 	% move to including reproduction with \cite{Charnov2001}
-	The framework used by \cite{West2001} was latter developed by \cite{Charnov2001} to take the cost of reproduction into account and allowing the estimation of lifetime production of offspring.  This was done by adding an additional cost which dedicated some portion of mass to reproductive output, essentially gonadosomatic index (GSI).	%like 20% max? in fish very high in  invertabrates \cite{Parker2018}
+	The framework used by \citeauthor{West2001} (\citeyear{West2001}) was latter developed by \citeauthor{Charnov2001} (\citeyear{Charnov2001}) to take the cost of reproduction into account and allowing the estimation of lifetime production of offspring.  This was done by adding an additional cost which dedicated some portion of mass to reproductive output, essentially gonadosomatic index (GSI).	%like 20% max? in fish very high in  invertabrates \cite{Parker2018}
 	% improved by hou et al \cite{Hou2008} talk about including SDA and energy improvements
-	\citeauthor{West1997}'s (\citeyear{West2001}) model was later expanded upon by \cite{Hou2008} to elaborate on the maintenance cost.  \citeauthor{Hou2008} (\citeyear{Hou2008}) takes both the difference between the cost of maintaining tissue and creating it, a factor that is neglected in \cite{West2001}, and the cost of digestion into account.
+	\citeauthor{West2001}'s (\citeyear{West2001}) model was later expanded upon by \citeauthor{Hou2008} \citeyear{Hou2008} to elaborate on the maintenance cost.  \citeauthor{Hou2008} (\citeyear{Hou2008}) takes both the difference between the cost of maintaining tissue and creating it, a factor that is neglected in \citeauthor{West2001} (\citeyear{West2001}), and the cost of digestion into account.
 	
 	% begin caveats
 	% tautology still present 
@@ -167,7 +180,7 @@ url=false, isbn=false]{biblatex}
 		\label{handling_time}
 		h(m) = t_{h,0} m_t^\beta
 	\end{equation}
-	A functional response alone is not enough to fully define intake.  This is because processing of consumed resources is not one hundred percent efficient which leads to inevitable loss consumed energy.  As a result, to achieve the final gain term, a dimensionless efficiency term $\epsilon$ is applied.  In poikilotherms efficiency is roughly 70\% \parencite{Peters1983}
+	A functional response alone is not enough to fully define intake.  This is because processing of consumed resources is not one hundred percent efficient which leads to inevitable loss consumed energy.  As a result, to achieve the final gain term, a dimensionless efficiency term $\epsilon$ is applied.  In poikilotherms assimilation efficiency is roughly 70\% \parencite{Peters1983}
 	
 	\subsubsection{Loss}
 	Metabolic cost  has previously been dependant upon the gain term within traditional OGMs (see \cite{West2001, Hou2008}).  However, for non-maximal intake the relationship will no longer hold true.  As a result, this model has taken previously measured values to be used as metabolic cost (see Eq. \ref{metabolic_cost} taken from \cite{Peters1983} % add ref to hemmingsen here since that is the peters source
@@ -209,9 +222,10 @@ url=false, isbn=false]{biblatex}
 	Fitness being defined as how much an individual is able to contribute to the gene pool \parencite{Speakman2008, Stearns2000}.  % Would like to remove this and link more smoothly
 	To this end, lifetime reproductive output is often used as a measure of fitness \parencite{Charnov1991, Audzijonyte2018, Speakman2008, Stearns2000, Charnov2001, Tsoukali2016, Brown1993, Charnov2007}.  Therefore, by maximising for reproductive output, it should become clear what parameters will yield the highest fitness.  These parameters will then show whether, within a theoretical framework, hyperallometric scaling arises.
 	
-	To find all optimal values for reproduction would require Eq. \ref{reproductive_output} to analytically solved.  However, since no such solution is possible, I simulated the problem numerically to obtain a result.  This was done by simulating across values of $ c $ and $ \rho $, the parameters of interest between growth (Eq. \ref{dmdt_juvenile} and \ref{dmdt_mature}) and reproductive output (Eq. \ref{reproductive_output}).  $ c $ was bound between 0 and 0.4, which encapsulates the values measured within fish \parencite{Benoit2018, Roff1983, Fontoura2009}.  To search for any hyperallometry within reproduction, $ \rho $ was bound between 0 and 2.  
+	To find all optimal values for reproduction would require Eq. \ref{reproductive_output} to analytically solved.  However, since no such solution is possible, I simulated the problem numerically to obtain a result.  This was done by simulating across values of $ c $ and $ \rho $, the parameters of interest between growth (Eq. \ref{dmdt_juvenile} and \ref{dmdt_mature}) and reproductive output (Eq. \ref{reproductive_output}).  $ c $ was bound between 0 and 0.4, which encapsulates the values measured within fish \parencite{Benoit2018, Roff1983, Fontoura2009}.  Though it has been shown to reach as much as 0.7 in some species \parencite{Parker2018}  To search for any hyperallometry within reproduction, $ \rho $ was bound between 0 and 2.  
 	The simulation was then run at 0.01 value intervals in both $c$ and $\rho$ over a lifespan of one million days.  The results of each simulation were recorded and any non-viable results were discarded.  A result was considered non-viable if fish had ``shrunk" more than 5\% in order to accommodate reproductive costs.  Shrinking occurs in the model because  the combined loss of energy to metabolism and reproduction is too much for the simulated values at the mass achieved by maturation so the individual experiences a deficit of energy, which is paid by loss in mass until equilibrium is achieved. % \cite{VandenBerghe1992} for reproductive mass loss (though it is due to behaviour changes)
-	Shrinking is not expected at maturity in reality.  Typically, maturity will occur while the organism still has room for growth.  It is the onset of reproduction which is considered to slow or stop growth.  Shrink can be thought of as starvation in a real organism.  If energetic cost are not met then energy reserves in the body, such as fat and muscle, are broken down for energy.  It has been shown that some fish are capable of losing up to 10\% of their body mass \parencite{VandenBerghe1992}.  However, this was during the breeding season and caused by behavioural changes due to parenting.  Additionally, individuals were shown to rebound back to their``normal" body mass once the breeding season had ended.
+	Shrinking is not expected at maturity in reality.  Typically, maturity will occur while the organism still has room for growth.  It is the onset of reproduction which is considered to slow or stop growth % this is the case where the metabolic exponent is the same or less than the intake one.
+	 (see Fig. \ref{OGM_Curve}).  Shrink can be thought of as starvation in a real organism.  If energetic cost are not met then energy reserves in the body, such as fat and muscle, are broken down for energy.  It has been shown that some fish are capable of losing up to 10\% of their body mass \parencite{VandenBerghe1992}.  However, this was during the breeding season and caused by behavioural changes due to parenting.  Additionally, individuals were shown to rebound back to their``normal" body mass once the breeding season had ended.
 	% survival impacts of shrinking? are there sources?
 	% \cite{Lambert2000}
 	
@@ -225,8 +239,9 @@ url=false, isbn=false]{biblatex}
 		%		TODO check description capitalisation
 		
 		\begin{table}[h!]
-			\caption{Table describing parameters used in the model, along with values, units and sources where applicable.} 
+			\caption{Table describing parameters used in the model, along with values, units and sources where applicable.  The units of resource density change depending on the dimension of intake.  $m^D$ represent either $m^2$ in 2D or $m^3$ in 3D} 
 			\label{parameters}
+			\vspace{2mm}
 			\begin{tabular}{c l l l l p{3cm}}
 				\hline
 				Parameter 	& Description 			& Value 	& Units 	& Range 		& Source \\
@@ -241,8 +256,8 @@ url=false, isbn=false]{biblatex}
 				$Z$			& Rate of instantaneous mortality& $2/\alpha$	& & & \cite{Charnov2001}\\%double check ref
 				$k$			& Reproductive senescence & 0.01\\
 				
-				$\epsilon$	& Resource Conversion Efficiency & 0.70 & - & - 		& \cite{Peters1983} \\
-				$X_r$ 		& Resource Density		& -		& kg		& ?				& -\\
+				$\epsilon$	& Assimilation Efficiency & 0.70 & - & - 		& \cite{Peters1983} \\
+				$X_r$ 		& Resource Density		& -		& kg/m$^D$		& 0.11 - 30				& -\\
 				$\gamma$	& Search rate scaling exponent & 0.68 in 2D	& - & - & \cite{Pawar2012} \\
 				&						& 1.05 in 3D\\
 				$a_0$		& Search rate scaling constant & $10^{-3.08}$ in 2D & m$^2$ s$^{-1}$ kg$^{-0.68}$   & - &\cite{Pawar2012}	\\
@@ -267,12 +282,12 @@ url=false, isbn=false]{biblatex}
 
 	\subsection{Produced Growth Curve}
 	% talking about at meta_exp = 1
-	As can be seen in Figure \ref{growth_curve}, growth is very fast within the model.  Asymptotic mass is reached by ~10 days.  This makes interpreting any results regarding maturation time difficult % TODO < rephrase
-	because any time after ~10 days produces the same result (see Fig. \ref{fig:sensmaturationtimelong}, \ref{fig:sensmaturationtimeshort} and \ref{fig:senslowresourcesmaturationtimeshort}).
+	As can be seen in Figure \ref{growth_curve}, growth is very fast within the model.  Asymptotic mass is reached by $\sim$10 days.  This makes interpreting any results regarding maturation time difficult % TODO < rephrase
+	because any time after $\sim$10 days produces the same result (see Fig. \ref{fig:sensmaturationtimelong}, \ref{fig:sensmaturationtimeshort} and \ref{fig:senslowresourcesmaturationtimeshort}).
 	
-	\subsection{Resources}
+	\subsection{Resource Density}
 	% talking about at meta_exp = 1
-	Increasing resource density leads to an increase in $\rho$.  In both dimensions hyperallometric scaling was observed (see Fig. \ref{fig:senslowresourcesresourcedensity}, \ref{fig:sensresourcedensity}).  However, in 3D scaling stays between 1.2 and 1, with occasional dips below one. Perhaps due to numeric instability within the model (Fig. \ref{fig:senslowresourcesresourcedensity}).  Once resource density exceeds ?? kg/m$^3$ in 3D resources are saturated and no change will occur even if density is increased (Fig. \ref{fig:senslowresourcesresourcedensity})
+	Increasing resource density leads to an increase in $\rho$.  Hyperallometric scaling was observed in both dimensions (see Fig. \ref{fig:senslowresourcesresourcedensity}, \ref{fig:sensresourcedensity}).  However, in 3D scaling stays between 1.2 and 1, with occasional dips below one. Perhaps due to numeric instability within the model (Fig. \ref{fig:senslowresourcesresourcedensity}).  Once resource density exceeds ?? kg/m$^3$ in 3D resources are saturated and no change will occur even if density is increased (Fig. \ref{fig:senslowresourcesresourcedensity})
 	In 2D resources become saturated at ?? kg/m$^2$. % check dimensionality paper for means of comparing the two values and if there is none point out that there is a difference due to dimensions
 	
 	\subsection{Metabolic Exponent}
@@ -286,12 +301,15 @@ url=false, isbn=false]{biblatex}
 	% talking about at meta_exp = 1
 	At saturated resource densities, allowing for greater proportions of shrinking enables $\rho$ to be set to larger values in both dimensions.  This is perhaps not surprising as increasing the shrinking proportion allows for a larger reproductive cost since all individuals will already be at asymptotic mass at time of maturation.
 	
+	\subsection{$c$ Values}
+	Estimations of $c$ are low in many cases, especially in 2D.  While this may be low compared to the $\sim$10\% - 35\% expected \parencite{Benoit2018, Fontoura2009, Roff1983} it is not unprecedented for values of 2\% to be observed in some fish \parencite{Gunderson1997}.  It may be necessary for the lower bounds of $c$ to be adjusted based on what is expected or even viable in the organisms being simulated.
+	
 %	minimum viable resource is dependent upon meta.exp, with 0.75 allowing for less than that of 1 and scaling in between 0.2 for 1 and 0.15 for 0.75. likewise 3D is capable of going lower than 2D due to the higher intake rate.  shrinkage plays no role here.
 
 	\begin{figure}[h!]
 				
 %		TODO 1.The title for each plot needs to be cleaned up.  2.The units should be m^2 and 3.need letter labels for each.
-		\includegraphics[width=\textwidth]{../../results/report_3D2D_HighLowResCLEAN.pdf}
+		\includegraphics[width=\textwidth]{../../results/report_3D2D_HighLowResCLEAN_meta_exp_1.pdf}
 		
 		\caption{Multiplot with 2D vs 3D and varying resource densities. The optimal value is denoted by the blue circle.
 		The resources used for the low resource scenario (top row) is the minimum amount of resources that allows growth with a $c$ and $\rho$ of 0.01.  As would be expected, since has steeper scaling, 3D allows for growth at smaller resource densities than 2D.
@@ -302,7 +320,21 @@ url=false, isbn=false]{biblatex}
 		The metabolic scaling exponent = 1 in all cases}
 		\label{resources2D3D}
 	\end{figure}
-	
+
+	\begin{figure}[h!]
+		
+		%		TODO 1.The title for each plot needs to be cleaned up.  2.The units should be m^2 and 3.need letter labels for each. CHECK SHRINKING
+		\includegraphics[width=\textwidth]{../../results/report_3D2D_HighLowResCLEAN_meta_exp_075.pdf}
+		
+		\caption{Multiplot with 2D vs 3D and varying resource densities. The optimal value is denoted by the blue circle.
+			The resources used for the low resource scenario (top row) is the minimum amount of resources that allows growth with a $c$ and $\rho$ of 0.01.  As would be expected, since has steeper scaling, 3D allows for growth at smaller resource densities than 2D.
+			Low reources in 2D were $ \approx 0.1kg/m^2 $ and $ 0.00035kg/m^2 $ in 3D.
+			$ 100kg/m^2 $ was used for high resources because, which although unrealistic, ensures that resources are not a limiting factor in the simulations.
+			Hyperallometric scaling is observed in 2D ($\rho = 1.64$ at high resources and 1.99 at low resources (NOTE: This is because 2 is the upper limit of $\rho$ I have simulated here). 
+			Scaling in 3D is slightly hypoallometric $rho = 0.94$ and c = 0.01 at high resources. $\rho = 0.8$ and $c = 0.01$ at low resources
+			The metabolic scaling exponent = 0.75 in all cases}
+		\label{resources2D3D}
+	\end{figure}
 	
 	\begin{figure}[h!]
 		
@@ -322,9 +354,9 @@ url=false, isbn=false]{biblatex}
 	\end{figure}
 		
 	\begin{figure}
-		\centering
+		\centering %TODO Units for axis?
 		\includegraphics[width=\textwidth]{../../results/pretty_curve}
-		\caption{Example of the growth curve and cumulative reproduction expected from a tradition OGM model. Maturation occurs at 1000 days, after which growth is less steep until reaching asymptotic mass.}
+		\caption{Example of the growth curve and cumulative reproduction expected from a tradition OGM model. Maturation occurs at 1000 days, after which growth is less steep until reaching asymptotic mass.  }
 		\label{OGM_Curve}
 	\end{figure}
 	
@@ -350,39 +382,66 @@ url=false, isbn=false]{biblatex}
 		% the mass problem
 			% Shrinking and how it addresses the growth speed issue in this model to a degree in my opinion.
 		% gsi is likley underestimated in some cases at the very least 0.01 gsi wont be viable for all animals
+	Some caveats with the results of the model.  First, growth is simulated as being extremely fast.  As previously stated, asymptotic size was reach by $\sim$10 days.  This is of course not representative of the real world, where individuals generally need several months to years to reach maturity.  (need source)
 	
-
-
+	This may be due to several factors.  First is that metabolic cost may be underestimated.  Similar to \citeauthor{West2001} (\citeyear{West2001}), this study used resting metabolic rate to define metabolic costs.  However, this does not take other costs into account such as digestion and locomotion.
+	%A rate which is typically used within energetic and growth studies, including early OGMs \parencite{Brett1971,Gillooly2001}  % ref for RMR in growth Tsoukali?  Burger? 
+	This was addressed in traditional OGMs by \citeauthor{Hou2008} (\citeyear{Hou2008}).  However, due to the use of asymptotic mass in the parametrisation of this change, the same changes could not be used in this model.  Resting metabolic rate and active metabolic rates do not scale in the same way with mass \parencite{Gillooly2001, Weibel2004}.  As such, inclusion of active metabolic rates, while challenging to implement, is needed.
+	Additionally, there may be behavioural or physiological factors that would lead to an altered metabolic rate.  
+	% TODO V presenting this as an issue but it is an area for improvement needs rephrasing and/or shifting
+	In this regard, temperature plays a critical role.  It is well documented that a change in temperature will change many biological rates.  For homeotherms this can come as a result of environmental temperature change % source
+	and/or as a result of lowered metabolic rate, for example in times of starvation. %sources \cite{Hou2008} has a lead.
+	In poikilotherms ambient temperature also plays a role.  It has been shown that growth is dependent on temperature within fish. % sources
+	Fish sizes are expected to decrease due to climate change by as much as XX\%. %source
+	The functional response data used in this study is standardised around 15\textdegree{}C.
+	Meanwhile the metabolic cost is for an unspecified temperature.  Using rates where the temperature effect is taken into account.  Work such as \citeauthor{Barneche2014} (\citeyear{Barneche2014}) has investigated this effect, however the estimate for metabolic rate is several orders of magnitude lower than what was reported by \citeauthor{Peters1983} (\citeyear{Peters1983}), which is the rate used in this study.  Thus further investigation is needed.  % should include a plot in the SI for this.
+	
+	
+	Another possible point of error is the estimates for supply.  The parameters used from \citeauthor{Pawar2012} (\citeyear{Pawar2012}) are for a spectrum of animals from mammals to insects.  It is possible by reanalysing the data for only marine species, or more specifically only within taxon or species, predictions of supply could be improved \parencite{Marshall2019}.  % check dim paper for addressing rates in different environments
+	
+	
+	
+	Despite this, I believe that the patterns shown here can be trusted,% hate this phrasing "I believe" ugh
+	with the exception of the effect of time to maturity.  This is because while the exact results are not representative of reality, the relationship between the values is.  For example, the manner in which supply and metabolic rate interact for different values of the metabolic scaling exponent.  The fact that a higher metabolic scaling exponent will cause intake and metabolic cost to intersect sooner does not change regardless of the absolute values.
+	
+	A factor that is not taken into account in this model is that resources are not constant over time.  This can be implemented within the model by varying resource density over time.  The functional response will respond accordingly giving intake which varies through time.  One concern with implementing such a response is fluctuations are likely not experienced by all organisms in the same way.  For a fish with a small range a local fluctuation can be measured and described relatively simply.  However, for a fish with a very large range there is the possiblity leaving resource poor areas in search of richer waters. 
+	% However such field data is sparse. <- justify saying this some how. need a review or something.
+	
+	
 	% What else can be done to address these issues
 		% What is the minimum amount of GSI needed. reproductive structure will vary a bit between species and there is likely a minimum that a species must devote to these structures for them to be viable.
 	
 	
 	% Emphasis that this is applicable to more than just fish - What needs to be done to apply the model to other animal groups.
+	In conclusion, the model presented in this study is a promising base which can be expanded upon in a way that was not possible with previous OGMs allowing for much more controlled and detailed explanations of the factors controlling growth.  In contrast to all previous work, which assume optimal supply, the concept of varying supply is addressed using functional responses.  Additionally, qualitative evidence is provided supporting hyperallometric scaling in fish using energy budget as the basis.  The model can easily be applied to any animal taxon, not just fish, with some simple changes.  Additionally, there are clear directions to be explored to improve the model's accuracy.
 	
 	\subsection{planned outline}
 	Overall summary of results and their meaning.
-	- I show that hyper allometry is possible within fish.  
-	- higher metabolic cost are leading to hyper allometry, even though I am seeing this for what the data considers too high \parencite{Marshall2019} % see my google drive doc
-	
+	\\- I show that hyper allometry is possible within fish.  
+	\\- higher metabolic cost are leading to hyper allometry, even though I am seeing this for what the data considers too high (i.e. metabolic scaling expontent = 1) \parencite{Marshall2019} % see my google drive doc
+	\\- scaling in 3D will outscale metabolic cost in all cases Table \ref{parameters} because it is greater than 1, need reproductive cost to stop growth.
 	Shrinking and how it addresses the growth speed issue in this model to a degree in my opinion.
-	- Is like seeing the stage of growth we expect to see in a typical growth curve in reverse.  Where instead of growing into the asymptotic mass, it shrinks to it.  The energy balance remains the same.
-	
+	\\- Is like seeing the stage of growth we expect to see in a typical growth curve in reverse.  Where instead of growing into the asymptotic mass, it shrinks to it.  The energy balance remains the same.
+	\\
 	Issues with my model
 	- mass is too high, addressing a more detailed reproductive mass/metabolic rate may address this or reanalysing samraats data to be more taxon specific may do it.
-	
+	\\
 	What else can be done.
-	- more fish specific intake using \cite{Pawar2012} methods as argued in \cite{Marshall2019}
-	- trying to model specific species with know growth curves to see how well our results map to them even if the curve isn't great it could be that reproductive output and final mass map well.
-	- more detailed metabolic cost since here is basically just RMR with higher exponents.  It may be that the constant shift too and this would lead to better predictions
-	- Incorporate osculating resource density.  was attempted here but due to computational problems could not be implemented.  There is a lack of oscillation data this though and the goal would need to be far more specific since it will depend on scale and range of the organism.
-	- This same framework could be applied to other taxa with just a little adjustment (metabolic cost and reproductive equation?)
-	- There may be behavioural changes that occur at under feeding restriction that slows metabolism, similar to hibernation etc.
-	- temperature could be added here to adjust the metabolic and functional response rates %samraats data is standardised to 15C doesn't seem to be noted in peter's, hemingsen may show it
-	
+	\\- more fish specific intake using \cite{Pawar2012} methods as argued in \cite{Marshall2019}
+	\\- trying to model specific species with know growth curves to see how well our results map to them even if the curve isn't great it could be that reproductive output and final mass map well.
+	\\- more detailed metabolic cost since here is basically just RMR with higher exponents.  It may be that the constant shift too and this would lead to better predictions
+	\\- Incorporate oscillating resource density.  was attempted here but due to computational problems could not be implemented.  There is a lack of oscillation data this though and the goal would need to be far more specific since it will depend on scale and range of the organism.
+	\\- This same framework could be applied to other taxa with just a little adjustment (metabolic cost and reproductive equation?)
+	\\- There may be behavioural changes that occur at under feeding restriction that slows metabolism, similar to hibernation etc.
+	\\- temperature could be added here to adjust the metabolic and functional response rates %samraats data is standardised to 15C doesn't seem to be noted in peter's, hemingsen may show it
+	- develop the model to include storage like DEB or put this into a DEB framework.
+	\\
 	What is the minimum amount of GSI needed. reproductive structure will vary a bit between species and there is likely a minimum that a species must devote to these structures for them to be viable. %\cite{Gunderson1997} shows that mortality increases with higher GSI and larger inds have lower GSI does show low values for GSI (0.02) 
 	%GSI can reach 0.75 in invertebrates \cite{Parker2018}
-	
+	\\
 	Emphasis that this is applicable to more than just fish - What needs to be done to apply the model to other animal groups. % need to open up gsi \cite{Parker2018} 0.75 inverts
+	
+	
 	\nolinenumbers
 %	\subsection{notes}
 %	there are some integration issues that could allow for the appearance of more possible values
