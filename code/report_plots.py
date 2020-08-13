@@ -22,20 +22,7 @@ import multiprocessing as mp
 import logging
 
 
-#### Parameters #####
-m0 = 1**-3 #1mg#10**-4 #1g
-R0 = 0
-time = 365*10 #10**6
-shrinkage = 0.3
-resolution = 0.01
-c_vec = around(arange(0, 0.4, resolution), decimals=4)
-rho_vec = around(arange(0, 2, resolution), decimals=4)
 
-params = {"alpha" : 365*5, "epsilon" : 0.7,
-          "norm_const" : None, "meta_prop" : None, "meta_exp" : 1,
-          "c" : None, "rho" : None, 
-          "Xr" : 0.5, "amp" : 0, "period" : 365, "dimensionality" : None
-}
 
 ## plot sizes
 a4_sheet = array([8.3, 11.7]) # in inches
@@ -58,13 +45,21 @@ def sensitivity(key, values, c_vec, rho_vec, m0, R0, time, params, shrinkage):
     start = timer()
     c_list = []
     rho_list = []
-
+    dim = params["dimensionality"]
     for i, val in enumerate(values):
         if key == "shrinkage": # in case i am looking at shrinking
             shrinkage = val
         else:
             params[key] = val
+
         c, rho = F.find_optimum(c_vec, rho_vec, m0, R0, time, params, shrinkage)
+
+        # handle results with reproduction which have all values as optima so have 0 as optimum
+        if c ==0  or rho == 0:
+            c = None
+            rho = None 
+
+
         c_list.append(c)
         rho_list.append(rho)
 
@@ -76,7 +71,7 @@ def sensitivity(key, values, c_vec, rho_vec, m0, R0, time, params, shrinkage):
     return array([c_list, rho_list])
 
 
-def sens_and_save_res (dim, key, values, c_vec, rho_vec, m0, R0, time, params, shrinkage, x_label):
+def sens_and_save_res (dim, key, values, c_vec, rho_vec, m0, R0, time, params, shrinkage, prefix):
     """
     Finds the optimal rho and c values which lead to maximum reproductive output. Saves the results and plots both a line and scatter plot sensitivity analysis style plot.
 
@@ -91,8 +86,7 @@ def sens_and_save_res (dim, key, values, c_vec, rho_vec, m0, R0, time, params, s
         time (int): length of time to simulate over in days
         params (dict): parameter dictionary for dmdt see Functions.py `dmdt`
         shrinkage (float): amount of shrinking allowed at maturation
-        x_label (str): label for the x-axis of the plot
-
+        prefix (str): label naming files
     Returns:
         [type]: [description]
     """
@@ -102,72 +96,64 @@ def sens_and_save_res (dim, key, values, c_vec, rho_vec, m0, R0, time, params, s
     c_list, rho_list = sensitivity(key, values, c_vec, rho_vec, m0, R0, 
                 time, temp_params, shrinkage)
     
-    with open(f"../results/sensitivity{key}{dim}.csv", "w") as file:
+    with open(f"../results/sensitivity{prefix}{key}{dim}.csv", "w") as file:
         writer = csv.writer(file)
-        writer.writerow(["c", "rho", key])
+        writer.writerow(["c", "rho", key, "Xr", "metabolic exponent"])
         for i in range(len(c_list)):
-            writer.writerow([c_list[i], rho_list[i], values[i]])
-
-        # plots
-    # scatter
-    fig = plt.figure(figsize=a4_box)
-    plt.scatter(values, c_list)
-    plt.xlabel(x_label)
-    plt.ylabel("c")
-    plt.savefig(f"../results/scatsens{dim}_{key}_c.pdf")
-
-    fig = plt.figure(figsize=a4_box)
-    plt.scatter(values, rho_list)
-    plt.xlabel(x_label)
-    plt.ylabel("rho")
-    plt.savefig(f"../results/scatsens{dim}_{key}_rho.pdf")
-    #line
-    fig = plt.figure(figsize=a4_box)
-    plt.plot(values, c_list)
-    plt.xlabel(x_label)
-    plt.ylabel("c")
-    plt.savefig(f"../results/linesens{dim}_{key}_c.pdf")
-
-    fig = plt.figure(figsize=a4_box)
-    plt.plot(values, rho_list)
-    plt.xlabel(x_label)
-    plt.ylabel("rho")
-    plt.savefig(f"../results/linesens{dim}_{key}_rho.pdf")
-
-
+            writer.writerow([c_list[i], rho_list[i], values[i], temp_params["Xr"], temp_params["meta_exp"]])
+    
     return 0
+
+
 ### MAIN ####
 if __name__ == "__main__":
 
     logging.basicConfig(filename="report_plots.log", level=logging.INFO)
 
-    dimensions = ["2D", "3D"]
+        #### Parameters #####
+    m0 = 1**-3 #1mg#10**-4 #1g
+    R0 = 0
+    time = 365*10 #10**6
+    shrinkage = 0.05
+    resolution = 0.01
+    c_vec = around(arange(0, 0.4, resolution), decimals=4)
+    rho_vec = around(arange(0, 2, resolution), decimals=4)
 
-    keys = ["Xr", "meta_exp", "alpha", "shrinkage"]
-    resources = linspace(0.2, 100, 50)
-    exponents = arange(0.75, 1.01, 0.05)
+    params = {"alpha" : 365, "epsilon" : 0.7,
+          "norm_const" : None, "meta_prop" : None, "meta_exp" : 1,
+          "c" : None, "rho" : None, 
+          "Xr" : 0.01, "amp" : 0, "period" : 365, "dimensionality" : None
+}
+
+    
+    prefix = "LowResources_2D_metaexp1" # for naming files
+    dimensions = ["2D"]#["2D", "3D"]
+    keys = ["alpha", "shrinkage"]#["Xr", "meta_exp", "alpha", "shrinkage"]
+
+
+
+
+
+    resources = linspace(0.01, 0.5, 25)#linspace(0.01, 0.5, 50)#linspace(0.5, 30, 50)#
+    exponents = arange(0.75, 1.001, 0.01)#arange(0.75, 1.001, 0.01)
     alphas = around(linspace(1, 20, 20, dtype=int), decimals=0)#around(linspace(1, 2000, 100, dtype=int), decimals=0)
-    shrink = linspace(0, 0.3, 10)
+    shrink = linspace(0, 0.3, 20) # shrink percentages
     processes = []
     for key in keys:
         if key == "Xr":
             values = resources
-            x_label = "Resource Density ($kg/m^2$)"
         elif key == "meta_exp":
             values = exponents
-            x_label = "Metabolic Exponent"
         elif key == "alpha":
             values = alphas
-            x_label = "Time to Maturation"
         elif key == "shrinkage":
             values = shrink
-            x_label = "Allowed Shrinking"
         else:
             logging.info("key incorrect.  Key = ", key)
             ValueError
         for dim in dimensions:
             logging.info(f"{key} {dim} being assigned process")
-            p = mp.Process(target=sens_and_save_res, args=(dim, key, values, c_vec, rho_vec, m0, R0, time, params, shrinkage, x_label))
+            p = mp.Process(target=sens_and_save_res, args=(dim, key, values, c_vec, rho_vec, m0, R0, time, params, shrinkage, prefix))
             p.start()
             processes.append(p)
 
@@ -175,286 +161,5 @@ if __name__ == "__main__":
         logging.info("Joining Processes")
         process.join()
         process.close()
-    exit() # end here
 
 
-    # ##resources sensitivity
-
-    # ## 2d
-    # key = "Xr"
-    # dim = "2D"
-    # temp_params = deepcopy(params)
-    # temp_params["dimensionality"] = dim
-    # resources = linspace(0.2, 100, 50)
-
-    # c_list, rho_list = sensitivity(key, resources, 
-    #                             c_vec, rho_vec, m0, R0, time, temp_params, shrinkage)
-    # with open(f"../results/sensitivity{key}{dim}", "w") as file:
-    #     writer = csv.writer(file)
-    #     writer.writerow(["c", "rho"])
-    #     for i in range(len(c_list)):
-    #         writer.writerow([c_list[i], rho_list[i]])
-
-    # # plots
-    # # scatter
-    # fig = plt.figure(figsize=a4_box)
-    # plt.scatter(exponents, c_list)
-    # plt.xlabel("Resource Density ($kg/m^2$)")
-    # plt.ylabel("c")
-    # plt.savefig("../results/scatsens{dim}_{key}_c.pdf")
-
-    # fig = plt.figure(figsize=a4_box)
-    # plt.scatter(exponents, rho_list)
-    # plt.xlabel("Resource Density ($kg/m^2$)")
-    # plt.ylabel("rho")
-    # plt.savefig(f"../results/scatsens{dim}_{key}_rho.pdf")
-    # #line
-    # fig = plt.figure(figsize=a4_box)
-    # plt.plot(exponents, c_list)
-    # plt.xlabel("Resource Density ($kg/m^2$)")
-    # plt.ylabel("c")
-    # plt.savefig("../results/linesens{dim}_{key}_c.pdf")
-
-    # fig = plt.figure(figsize=a4_box)
-    # plt.plot(exponents, rho_list)
-    # plt.xlabel("Resource Density ($kg/m^2$)")
-    # plt.ylabel("rho")
-    # plt.savefig(f"../results/linesens{dim}_{key}_rho.pdf")
-
-
-    # print(f"{dim} {key} done")
-
-    # ## 3d
-    # key = "Xr"
-    # dim = "3D"
-    # temp_params = deepcopy(params)
-    # temp_params["dimensionality"] = dim
-    # resources = linspace(0.2, 100, 50)
-    # c_list, rho_list = sensitivity(key, resources, 
-    #                             c_vec, rho_vec, m0, R0, time, temp_params, shrinkage)
-
-    # with open(f"../results/sensitivity{key}{dim}", "w") as file:
-    #     writer = csv.writer(file)
-    #     writer.writerow(["c", "rho"])
-    #     for i in range(len(c_list)):
-    #         writer.writerow([c_list[i], rho_list[i]])
-
-
-    # # plots
-    # #scatter
-    # fig = plt.figure(figsize=a4_box)
-    # plt.scatter(exponents, c_list)
-    # plt.xlabel("Resource Density ($kg/m^2$)")
-    # plt.ylabel("c")
-    # plt.savefig("../results/scatsens{dim}_{key}_c.pdf")
-
-    # fig = plt.figure(figsize=a4_box)
-    # plt.scatter(exponents, rho_list)
-    # plt.xlabel("Resource Density ($kg/m^2$)")
-    # plt.ylabel("rho")
-    # plt.savefig(f"../results/scatsens{dim}_{key}_rho.pdf")
-
-    # #line
-    # fig = plt.figure(figsize=a4_box)
-    # plt.plot(exponents, c_list)
-    # plt.xlabel("Resource Density ($kg/m^2$)")
-    # plt.ylabel("c")
-    # plt.savefig("../results/linesens{dim}_{key}_c.pdf")
-
-    # fig = plt.figure(figsize=a4_box)
-    # plt.plot(exponents, rho_list)
-    # plt.xlabel("Resource Density ($kg/m^2$)")
-    # plt.ylabel("rho")
-    # plt.savefig(f"../results/linesens{dim}_{key}_rho.pdf")
-
-
-    # print(f"{dim} {key} done")
-
-
-    # #### exponent sensitivty
-
-    # ## 2d
-    # key = "meta_exp"
-    # dim = "2D"
-    # temp_params = deepcopy(params)
-    # temp_params["dimensionality"] = dim
-    # exponents = arange(0.75, 1.01, 0.05)
-    # c_list, rho_list = sensitivity(key, exponents, 
-    #                             c_vec, rho_vec, m0, R0, time, temp_params, shrinkage)
-
-    # with open(f"../results/sensitivity{key}{dim}", "w") as file:
-    #     writer = csv.writer(file)
-    #     writer.writerow(["c", "rho"])
-    #     for i in range(len(c_list)):
-    #         writer.writerow([c_list[i], rho_list[i]])
-
-    # # plots
-    # #scatter
-    # fig = plt.figure(figsize=a4_box)
-    # plt.scatter(exponents, c_list)
-    # plt.xlabel("metabolic exponent")
-    # plt.ylabel("c")
-    # plt.savefig("../results/scatsens{dim}_{key}_c.pdf")
-
-    # fig = plt.figure(figsize=a4_box)
-    # plt.scatter(exponents, rho_list)
-    # plt.xlabel("metabolic exponent")
-    # plt.ylabel("rho")
-    # plt.savefig(f"../results/scatsens{dim}_{key}_rho.pdf")
-
-    # #line
-    # fig = plt.figure(figsize=a4_box)
-    # plt.plot(exponents, c_list)
-    # plt.xlabel("metabolic exponent")
-    # plt.ylabel("c")
-    # plt.savefig("../results/linesens{dim}_{key}_c.pdf")
-
-    # fig = plt.figure(figsize=a4_box)
-    # plt.plot(exponents, rho_list)
-    # plt.xlabel("metabolic exponent")
-    # plt.ylabel("rho")
-    # plt.savefig(f"../results/linesens{dim}_{key}_rho.pdf")
-
-    # print(f"{dim} {key} done")
-
-
-    # ##3d
-    # key = "meta_exp"
-    # dim = "3D"
-    # temp_params = deepcopy(params)
-    # temp_params["dimensionality"] = dim
-    # exponents = arange(0.75, 1.01, 0.05)
-    # c_list, rho_list = sensitivity(key, exponents, 
-    #                             c_vec, rho_vec, m0, R0, time, temp_params, shrinkage)
-
-    # with open(f"../results/sensitivity{key}{dim}", "w") as file:
-    #     writer = csv.writer(file)
-    #     writer.writerow(["c", "rho"])
-    #     for i in range(len(c_list)):
-    #         writer.writerow([c_list[i], rho_list[i]])
-
-    # # plots
-    # #scatter
-    # fig = plt.figure(figsize=a4_box)
-    # plt.scatter(exponents, c_list)
-    # plt.xlabel("metabolic exponent")
-    # plt.ylabel("c")
-    # plt.savefig("../results/scatsens{dim}_{key}_c.pdf")
-
-    # fig = plt.figure(figsize=a4_box)
-    # plt.scatter(exponents, rho_list)
-    # plt.xlabel("metabolic exponent")
-    # plt.ylabel("rho")
-    # plt.savefig(f"../results/scatsens{dim}_{key}_rho.pdf")
-
-    # print(f"{dim} {key} done")
-
-    # #line
-    # fig = plt.figure(figsize=a4_box)
-    # plt.plot(exponents, c_list)
-    # plt.xlabel("metabolic exponent")
-    # plt.ylabel("c")
-    # plt.savefig("../results/linesens{dim}_{key}_c.pdf")
-
-    # fig = plt.figure(figsize=a4_box)
-    # plt.plot(exponents, rho_list)
-    # plt.xlabel("metabolic exponent")
-    # plt.ylabel("rho")
-    # plt.savefig(f"../results/linesens{dim}_{key}_rho.pdf")
-
-    # print(f"{dim} {key} done")
-
-
-
-
-
-    # #### Maturation sensitivity
-    # ## 2d
-    # key = "alpha"
-    # dim = "2D"
-    # temp_params = deepcopy(params)
-    # temp_params["dimensionality"] = dim
-    # alphas = around(linspace(1, 2000, 100), decimals=-1)
-    # c_list, rho_list = sensitivity(key, alphas, 
-    #                             c_vec, rho_vec, m0, R0, time, temp_params, shrinkage)
-
-    # with open(f"../results/sensitivity{key}{dim}", "w") as file:
-    #     writer = csv.writer(file)
-    #     writer.writerow(["c", "rho"])
-    #     for i in range(len(c_list)):
-    #         writer.writerow([c_list[i], rho_list[i]])
-
-    # # plots
-    # #scatter
-    # fig = plt.figure(figsize=a4_box)
-    # plt.scatter(exponents, c_list)
-    # plt.xlabel("Maturation Time")
-    # plt.ylabel("c")
-    # plt.savefig("../results/scatsens{dim}_{key}_c.pdf")
-
-    # fig = plt.figure(figsize=a4_box)
-    # plt.scatter(exponents, rho_list)
-    # plt.xlabel("Maturation Time")
-    # plt.ylabel("rho")
-    # plt.savefig(f"../results/scatsens{dim}_{key}_rho.pdf")
-    
-    # #line
-    # fig = plt.figure(figsize=a4_box)
-    # plt.plot(exponents, c_list)
-    # plt.xlabel("Maturation Time")
-    # plt.ylabel("c")
-    # plt.savefig("../results/linesens{dim}_{key}_c.pdf")
-
-    # fig = plt.figure(figsize=a4_box)
-    # plt.plot(exponents, rho_list)
-    # plt.xlabel("Maturation Time")
-    # plt.ylabel("rho")
-    # plt.savefig(f"../results/linesens{dim}_{key}_rho.pdf")
-
-
-    # print(f"{dim} {key} done")
-
-
-
-    # ## 3d
-    # key = "alpha"
-    # dim = "3D"
-    # temp_params = deepcopy(params)
-    # temp_params["dimensionality"] = dim
-    # alphas = around(linspace(1, 2000, 100), decimals=-1)
-    # c_list, rho_list = sensitivity(key, alphas, 
-    #                             c_vec, rho_vec, m0, R0, time, temp_params, shrinkage)
-
-    # with open(f"../results/sensitivity{key}{dim}", "w") as file:
-    #     writer = csv.writer(file)
-    #     writer.writerow(["c", "rho"])
-    #     for i in range(len(c_list)):
-    #         writer.writerow([c_list[i], rho_list[i]])
-
-    # # plots
-    # #Scatter
-    # fig = plt.figure(figsize=a4_box)
-    # plt.scatter(exponents, c_list)
-    # plt.xlabel("Maturation Time")
-    # plt.ylabel("c")
-    # plt.savefig("../results/scatsens{dim}_{key}_c.pdf")
-
-    # fig = plt.figure(figsize=a4_box)
-    # plt.scatter(exponents, rho_list)
-    # plt.xlabel("Maturation Time")
-    # plt.ylabel("rho")
-    # plt.savefig(f"../results/scatsens{dim}_{key}_rho.pdf")
-
-    # # Line
-    # fig = plt.figure(figsize=a4_box)
-    # plt.plot(exponents, c_list)
-    # plt.xlabel("Maturation Time")
-    # plt.ylabel("c")
-    # plt.savefig("../results/linesens{dim}_{key}_c.pdf")
-
-    # fig = plt.figure(figsize=a4_box)
-    # plt.plot(exponents, rho_list)
-    # plt.xlabel("Maturation Time")
-    # plt.ylabel("rho")
-    # plt.savefig(f"../results/linesens{dim}_{key}_rho.pdf")
-    # print(f"{dim} {key} done")
