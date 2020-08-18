@@ -1,7 +1,7 @@
 %% The report to gather all sections into, set formatting and compile.
 
 \documentclass[a4paper, 11pt, hidelinks]{article} %hidelinks removes the red boxes around hyperlinks
-
+%TODO prevent word spilling over lines
 %%%%%%%%%% Packages %%%%%%%%%%
 \usepackage{amsmath}
 \usepackage{epstopdf} % to allow use of crest in title page
@@ -70,7 +70,7 @@ url=false, isbn=false]{biblatex}
 	
 	\nolinenumbers
 	%%%%%%%%%% Acknowledgements %%%%%%%%%%
-	\include{Acknowledgements}
+	\include{Acknowledgements} %TODO order with abstract since not line numbered?
 	
 	%%%%%%%%%% Table of Contents %%%%%%%%%%
 	\tableofcontents
@@ -82,94 +82,57 @@ url=false, isbn=false]{biblatex}
 %	TODO Include Diego's references
 
 	%Ease into it a bit first
-	Body mass plays a role in determining many biological factors.  For example. larger males are more competitive for mates in many species.  Larger individuals are less vulnerable to predation, have lower mass specific metabolic rates and produce more offspring in their lifetime \parencite{Peters1983, Barneche2018, Craig2006, Magnhagen2001, Hixon2014, Marshall2006}.
+	Body mass plays a major role in determining many biological factors.  For example, larger individuals are less vulnerable to predation, have lower mass specific metabolic rates and produce more offspring in their lifetime \parencite{Peters1983, Barneche2018, Craig2006, Magnhagen2001, Hixon2014, Marshall2006}.
 	% growth, what we do and don't know.
-	By extension knowing how body mass changes over an organisms lifetime is the gateway to understanding how many biological rates change throughout ontogeny.  This is because so many biological rates scale with mass \parencite{Kleiber1932}.  Despite its importance, relatively little is know about the factors determining growth trajectories \parencite{Arendt2011, Marshall2019}.\\
-	% introduction of models
-	To date many models have been developed to predict and describe the growth of an organism throughout its lifetime.  The three main approaches used are the von Bertalanffy model, the dynamic energy budget (DEB) model and the ontogenetic growth model (OGM), which will be the focus of this study \parencite{Putter1918, vonBertalanffy1938, Kooijman1986, West2001}.  All of these are energetic based models with varying assumptions, key among which is the scaling of resource supply and metabolic rate with mass.   In OGMs supply is thought of as being optimal at all times which leads to the assumption that intake scales with mass to the power of 0.75.  Indeed while under optimal conditions this may be true, it neglects that this situation is thought to rarely occur in the field \parencite{Pawar2012}.
-%	Additionally, growth model approaches have made various assumptions about the scaling of metabolic rates.  OGMs assume that scaling is isometric with mass, i.e. scaling exponent is 1.  This is contrary to what has been thought 
-	This study takes the novel approach of using a mass-specific functional response and assimilation efficiency to describe how intake changes both throughout ontogeny and varying levels of resource availability. While the methodology used here can be used for any animal taxon, in order to investigate growth, a taxon much be chosen to parameterise metabolic rate around.  This study will focus on fish.
-		
-% TODO bring in OGM growth curve and use to illustate the basic OGM as per samraats comments
+	By extension, knowing how body mass changes over an organisms lifetime is the gateway to understanding how many biological rates change throughout ontogeny.  This is because so many biological rates scale with mass \parencite{Kleiber1932}.  Despite its importance, relatively little is know about the factors determining growth trajectories \parencite{Arendt2011, Marshall2019}.
+	\\
+	% TODO bring in OGM growth curve and use to illustate the basic OGM as per samraats comments
 	% Why is growth important
-	Understanding how organisms grow and what factors play a role in determining growth is not only insightful from the perspective of understanding the world around us, but can also be used to better manage the many fisheries and marine protected areas around the world.  An objective which is becoming increasingly important as the oceans' fish stocks continue to be depleted by overfishing. 
+	In the case of fish, understanding growth and what factors play a role in determining it is not only insightful from the perspective of understanding the world around us, but can also be used to better manage the many fisheries and marine protected areas around the world \parencite{Heino2013, Lester2009}.  An objective which is becoming increasingly important as the oceans' fish stocks continue to be depleted by overfishing. 
 	%VV rephrase this part to hint more towards size than it currently does VV
-	This is compounded by global warming which threatens to alter the structure of the ecosystems even if they are not fished and left in their ``natural" state. 
-	
-	Larger fish produce more offspring than smaller ones.  % this is known in general isometrically
-	In fact, it has been shown that larger fish produce far more offspring than the equivalent mass composed of smaller fish,  that is a 2kg fish will produce more offspring than two 1kg fish \parencite{Barneche2018}.
-	Larger fish also use energy more efficiently than multiple smaller ones per unit mass.  This is due to them having a lower mass specific metabolic rate \parencite{Peters1983, Kleiber1932, Brown2004}.  
-	%As a result a higher proportion of larger fish may actually reduce stress upon the ecosystem from an energetic perspective which could be useful when trying to manage fish stocks. %need citations for this also questionably neccessary as a point and has little backup? may even not be the case at all due to other pressures introduced by larger individuals in a system
-	% larger mothers produce larger offspring which may better survive \cite{Barneche2018}
-	Additionally, larger mothers produce larger offspring, which are then more likely to survive to adulthood and reproduce \parencite{Hixon2014, Marshall2006}. % double check this statement from barneche and get more backing
-	%
-	
-	It is already known that metabolic rate is dependant on temperature which in turn will lower fish sizes \parencite{Gillooly2001, Brown2004} and with increasing global temperatures, understanding in greater detail how increased metabolic rates may affect growth is useful in population management.
-	%
-	
-%	Growth is in essence a balancing act between how much energy an organism can acquire and the amount of energy required for maintenance, 
-%	that is movement, digestion et cetera.  
-	
-	%power laws -- needs citation or could be counted as common knowledge? \cite{Huxley1932}
-	Key to understanding biological rates and their relationship with mass is the concept of power laws. Many biological traits can be described as scaling to the power of some other biological trait.  That is some rate, $Y$, can be expressed for any mass by $Y = Y_0 m^\beta$, where $m$ is mass \parencite{Kleiber1932}.  Power laws can be broadly categorised based on the value of their exponent, $\beta$.  
-	Where the exponent equals one the relationship is described as isometric or linear, that is the two traits increase at the same rate.  
-	Where the exponent does not equal one, the relationship is said to be allometric.  That is the trait does not increase at the same rate as the trait being compared against.  In cases where the exponent is greater than one, the trait is said to scale super-linearly or hyperallometrically and to scale sub-linearly or hypoallometrically for cases with an exponent of less than one.
-	For the purposes of describing growth, these relationships are indispensable.   
-	
-	
-%	Traditionally ontogenetic growth models have relied on knowing how large an organism is expected to grow.
-%	%	von Bertalanffy / puetter model
-%	The von Bertalanffy growth equation relies on knowing the longest a fish can be and the length of the fish at the beginning of measurements \parencite{vonBertalanffy1938, Putter1918}.  From here, for a known growth rate, the length of the fish after a set amount of time has passed can be predicted.
-%	
-%	%OGMs
-%	Another approach has been to try explain growth from an energetic perspective.  That is an individuals growth is determined by the amount of energy available to it.  Once all costs, such as maintenance, have been paid all remaining energy can be invested towards growth.  There are two frameworks which have been built around this concept; dynamic energy budget (DEB) theory % TODO get ref for DEB original/important sources %add note to see discussion for more on DEB?
-%	and ontogenetic growth models (OGMs), which will be focused on here.
-
+	This is compounded by global warming which threatens to alter the structure of the ecosystems even if they are not fished and left in their ``natural" state \parencite{Bruno2018}.
+	It is already known that metabolic rate is dependant on temperature which in turn will lower fish sizes \parencite{Gillooly2001, Brown2004} and with increasing global temperatures, understanding in greater detail how increased metabolic rates %TODO mentioning metabolism here is now a bit random that it has been moved
+	may affect growth is useful in population management.
+	\\
+	% introduction of models
+	To date many models have been developed to predict and describe the growth of an organism throughout its lifetime.  The three main approaches used are the von Bertalanffy model, the dynamic energy budget (DEB) model and the ontogenetic growth model (OGM), which will be the focus of this study \parencite{Putter1918, vonBertalanffy1938, Kooijman1986, West2001}.  All of these are energetic based models with varying assumptions, key among which is the scaling of resource supply and metabolic rate with mass. %TODO move this final sentence to before the previous so the para end with this study focusing on ogm methodology  
+	%In OGMs supply is thought of as being optimal at all times which leads to the assumption that intake scales with mass to the power of 0.75.  Indeed while under optimal conditions this may be true, it neglects that this situation is thought to rarely occur in the field \parencite{Pawar2012}.
 	%	introduce \cite{West2001}	
-	One of the best known examples of an OGM is the model developed by \cite{West2001}.  This model is parameterised around the average energy content of animal tissue and asymptotic mass.  Asymptotic mass being the mass at which growth has essentially stopped due to metabolic cost and energy intake equalling each other (Fig. \ref{scaling_plot}a). The model hinges on the scaling with mass between energy intake (m$^{0.75}$, i.e. allometric sub-linear scaling) and maintenance cost (m$^1$, i.e. isometric linear scaling).  In other words, as mass increases maintenance costs will slowly overtake the intake rate and halt growth.  	
-	
+	\\
+	One of the best known examples of an OGM is the model developed by \cite{West2001}.  This model is parameterised around the average energy content of animal tissue and asymptotic mass.  Asymptotic mass being the mass at which growth has essentially stopped due to metabolic cost and energy intake equalling each other (Fig. \ref{scaling_plot}a). The model hinges on the scaling with mass between energy intake (m$^{0.75}$, allometric sub-linear scaling) and maintenance cost (m$^1$, isometric linear scaling).  In other words, as mass increases maintenance costs will slowly overtake the intake rate and halt growth (Fig. \ref{scaling_plot} a).  	
 	% talk about determinant and indeterminant growth/
 	% move to including reproduction with \cite{Charnov2001} mashed with \cite{Hou2008} imporvements briefly
-	The framework used by \citeauthor{West2001} (\citeyear{West2001}) was latter developed by \citeauthor{Charnov2001} (\citeyear{Charnov2001}) to take the cost of reproduction into account and allowing the estimation of lifetime production of offspring.  \citeauthor{Hou2008} (\citeyear{Hou2008}) latter developed \citeauthor{West2001}'s model further by expanding maintenance cost to include the cost of feeding and digestion (specific dynamic action), synthesis of new tissue and activity.
-	
-%	% move to including reproduction with \cite{Charnov2001}
-%	The framework used by \citeauthor{West2001} (\citeyear{West2001}) was latter developed by \citeauthor{Charnov2001} (\citeyear{Charnov2001}) to take the cost of reproduction into account and allowing the estimation of lifetime production of offspring.  This was done by adding an additional cost which dedicated some portion of mass to reproductive output, essentially gonadosomatic index.	%like 20% max? in fish very high in  invertabrates \cite{Parker2018}
-%	% improved by hou et al \cite{Hou2008} talk about including SDA and energy improvements
-%	\citeauthor{West2001}'s (\citeyear{West2001}) model was later expanded upon by \citeauthor{Hou2008} \citeyear{Hou2008} to elaborate on the maintenance cost.  \citeauthor{Hou2008} (\citeyear{Hou2008}) takes both the difference between the cost of maintaining tissue and creating it, a factor that is neglected in \citeauthor{West2001} (\citeyear{West2001}), and the cost of digestion into account.
-	
+	The framework used by \citeauthor{West2001} (\citeyear{West2001}) was latter developed by \citeauthor{Charnov2001} (\citeyear{Charnov2001}) to take the cost of reproduction into account and allowing the estimation of lifetime production of offspring.  \citeauthor{Hou2008} (\citeyear{Hou2008})  developed \citeauthor{West2001}'s model further by expanding maintenance cost to include the cost of feeding and digestion (specific dynamic action), synthesis of new tissue and activity.
 	% begin caveats
 	% tautology still present 
-
 	% Discuss allometry and isometry here to highlight what scaling super or sub linearly means
-	In the above OGMs intake is assumed to scale sub-linearly to the power of 0.75.  This is due to the assumption that the individuals are consuming at an optimal rate at all times and therefore the only limitation is their ability to make use of that energy.  In this case, intake should theoretically scale to the power of 0.75 (see \cite{West1997}).  However, this is not always the case in the field.  It has been shown that, for non-optimal consumption, steeper scaling can occur \parencite{Pawar2012, Peters1983}. Additionally, OGMs, like many growth and metabolic models, typically use basal or resting metabolic rate to calculate metabolic cost.  This is the minimal metabolic rate of an organism and is typically thought of as the rate of the organism when at relaxed and at rest.  However, it has been shown, once factors such as movement are taken into account, that the scaling becomes steeper \parencite{Weibel2004}.
-	% still no accounting for imperfect intake though is somewhat covered by \cite{Hou2011}
-	% bring up the caveats/assumptions of the model i.e. isometric metabolism and repro, 0.75 scaling of intake. optimal intake at all times etc. 
+	In the above OGMs intake is assumed to scale sub-linearly to the power of 0.75.  This is due to the assumption that the individuals are consuming at an optimal rate at all times and therefore the only limitation is their ability to make use of that energy.  In this case, intake should theoretically scale to the power of 0.75 (see \cite{West1997}).  However, this is not always the case in the field.  It has been shown that, for non-optimal consumption, steeper scaling can occur \parencite{Pawar2012, Peters1983}. Additionally, OGMs, like many growth and metabolic models, typically use basal or resting metabolic rate to calculate metabolic cost.  This is the minimal metabolic rate of an organism and is typically thought of as the rate of the organism when relaxed and at rest.  However, it has been shown, once factors such as movement are taken into account, that the scaling becomes steeper \parencite{Weibel2004}.
+	\\
 	% tautology of OGMs and \cite{Hou2011} close but still issues
 	The issue of non-optimal feeding is addressed somewhat by \citeauthor{Hou2011} (\citeyear{Hou2011}).  However, this growth was only investigated as, essentially, a proportion of optimal consumption and does not address a potential change in scaling of intake rate.
 	Another limitation of the models used in previous OGMs is the dependence on asymptotic mass.  The models are entirely dependent on the value of optimal intake and asymptotic mass.  All other values, such as metabolic cost, are then derived in relation to these.  However, organisms are not born with some inherent restriction to the size they can attain, at least not energetically.  If there is surplus energy for a given mass the organism should be able to grow.  Relying on asymptotic mass to define the upper bound of attainable mass does not allow for investigation of the mechanisms that underpin asymptotic size in reality. 
-	
-	
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=\linewidth]{../../results/scalingplot.pdf}
-		\caption{a) shows how maintenance cost outscales supply in a traditional OGM.  Growth only stops when maintenance reaches the supply line  b) shows scaling for supply and maintenance as equal. Since scaling is equal growth will never stop until the new cost of reproduction is introduced some time during development.  Blue line is supply, orange line is maintenance, green dotted line is reproduction}
+		\caption{a) shows how maintenance cost out-scales supply in a traditional OGM.  Growth only stops when maintenance (scaling exponent = 1) reaches the supply line (scaling exponent = 0.75)  b) shows scaling for supply and maintenance as equal. Since scaling is equal growth will never stop until the new cost of reproduction is introduced some time during development.  Blue line is supply, orange line is maintenance, green dotted line is reproduction}
 		\label{scaling_plot}
 	\end{figure}
-	% talk about how we assume that evolution settles upon values which optimise for reproduction -- can do this when talking about charnov?
-	
-	% Justify and appeal my methods	
 	With two of the key assumptions of current OGMs, that reproduction and metabolism scale isometrically, not holding in the field \parencite{Barneche2018, Pawar2012, Peters1983} there is a need to take an unexplored approach to modelling fish growth, in particular choosing to focus on developing how intake is described so as to better reflect the real world.  To do this an obvious starting point is to model intake as a functional response \parencite{Holling1959} so as to better reflect real world intake rates in terms of consumed biomass over time.  Non-optimal supply is a currently unexplored area within growth modelling.  This is likely due to the difficulty of directly measuring intake, especially in the field, Perhaps as a result comparatively less is known about consumption.  This leads to the need for proxy values to estimate it, for example nutrient flux \parencite{Schiettekatte2020}, or drawing broad relationships to approximate consumption, as this study will do.
-	Changing the manner in which intake is defined also requires changing metabolic cost, because the two are dependent upon each other in current OGMs.  This can be done by defining metabolic rate as a value dependent on current mass rather than asymptotic mass as has been done in OGMs up until this point.  This thought process is more mechanistic since an organism has no concept of ``How large should I grow?", but rather will acquire as much resources as it capable of at its current life stage and size.  Taking this more bottom-up mechanistic approach also allows exploration of what controls how large fish grow to, since as previously mentioned, from an energetic standpoint, an organism can grow indefinitely as long as there is surplus energy available after costs have been paid.  Of course, there are also mechanical and genetic limitations upon organism size, but once size is constrained to what is known to exist, this should not be an issue.  
-	Under the assumption that fish have evolved to maximise reproductive output, using the above framework, simulations can be carried out to demonstrate what conditions need to be met in order to achieve hyperallometric scaling of reproduction from an energetic perspective.  This study will answer 1) Under what metabolic scaling exponent can hyperallometric reproduction arise, 2) 
-	% describe basic OGM and how i change the intake term to reflect supply
-	
-%	\cite{Sibly2020} % for metabolic scaling
-%	\cite{Marshall2019} non-isometric scaling of repro#
+	Changing the manner in which intake is defined also requires changing metabolic cost, because the two are dependent upon each other in current OGMs.  This can be done by defining metabolic rate as a value dependent on current mass rather than asymptotic mass as has been done in OGMs up until this point.  This thought process is more mechanistic since an organism has no concept of ``How large should I grow?", but rather will acquire as much resources as it capable of at its current life stage and size.  Taking this more bottom-up mechanistic approach also allows exploration of what controls how large fish grow to, since as previously mentioned, from an energetic standpoint, an organism can grow indefinitely as long as there is surplus energy available after costs have been paid.  Of course, there are also mechanical and genetic limitations upon organism size, but once size is constrained to what is known to exist, this should not be an issue.  %TODO fix "this should not be an issue"
+	\\
+	This study takes the novel approach of using a mass-specific functional response and assimilation efficiency to describe how intake changes both throughout ontogeny and varying levels of resource availability. This study focuses on supply and growth within fish, however the same principles can be applied to other taxa.
+	\\
+	Previous OGMs have assumed that reproduction scales isometrically with mass.  This is indeed the case, within fish larger individuals produce more offspring than smaller ones.  % this is known in general isometrically
+	However, it has been shown that larger fish produce far more offspring than the equivalent mass composed of smaller fish,  that is a 2kg fish will produce more offspring than two 1kg fish, i.e. reproduction scales hyperallometrically \parencite{Barneche2018}.
+	Larger fish also use energy more efficiently than multiple smaller ones per unit mass.  This is due to them having a lower mass specific metabolic rate \parencite{Peters1983, Kleiber1932, Brown2004}.  
+	% larger mothers produce larger offspring which may better survive \cite{Barneche2018}
+	Additionally, larger mothers produce larger offspring, which are then more likely to survive to adulthood and reproduce \parencite{Hixon2014, Marshall2006}. 
+	This has led to thinking rather than metabolism having steeper scaling than supply being the reason that growth stops (Fig. \ref{scaling_plot}a).  Instead, metabolism and supply at saturated resources should scale in a similar manner, with the trigger for growth slowing and stopping being the scaling of reproduction (Fig. \ref{scaling_plot}b) \parencite{Marshall2019, Sibly2020}.
+	\\
+	% Justify and appeal my methods	
+	Assuming that fish have evolved to maximise reproductive output and can adapt to find an optimal strategy within the constraints of resource density, simulations can be carried out to demonstrate what conditions need to be met in order to achieve hyperallometric scaling of reproduction from an energetic perspective.  This study will answer 1) under what metabolic scaling exponent can hyperallometric reproduction arise, %TODO this may be a bit of an aggressive statement, tone down? Show that metabolic exp plays a large role in rho or something like that.
+	2) possible scaling of metabolism and reproduction is dependent upon supply and by extension dimensionality.
 
-% questions
-% what effect does exponent actually have in relation to growth
-% what coditions need to be fuflilled to possibly acheive hyperallometry
-% 
 	\nolinenumbers
 	
 	%%%%%%%%%% Methods %%%%%%%%%%
@@ -243,7 +206,7 @@ url=false, isbn=false]{biblatex}
 	Fitness being defined as how much an individual is able to contribute to the gene pool \parencite{Speakman2008, Stearns2000}.  % Would like to remove this and link more smoothly
 	To this end, lifetime reproductive output is often used as a measure of fitness \parencite{Charnov1991, Audzijonyte2018, Speakman2008, Stearns2000, Charnov2001, Tsoukali2016, Brown1993, Charnov2007}.  Therefore, by maximising for reproductive output, it should become clear what parameters will yield the highest fitness.  These parameters will then show whether, within a theoretical framework, hyperallometric scaling arises.
 	
-	To find all optimal values for reproduction would require Eq. \ref{reproductive_output} to analytically solved.  However, since no such solution is possible, I simulated the problem numerically to obtain a result.  This was done by simulating across values of $ c $ and $ \rho $, the parameters of interest between growth (Eq. \ref{dmdt_juvenile} and \ref{dmdt_mature}) and reproductive output (Eq. \ref{reproductive_output}).  $ c $ was bound between 0 and 0.4, which encapsulates the values measured within fish \parencite{Benoit2018, Roff1983, Fontoura2009}.  Though it has been shown to reach as much as 0.7 in some species \parencite{Parker2018}.  To search for any hyperallometry within reproduction, $ \rho $ was bound between 0 and 2.  
+	To find all optimal values for reproduction would require Eq. \ref{reproductive_output} to be solved analytically.  However, since no such solution is possible, I simulated the problem numerically to obtain a result.  This was done by simulating across values of $ c $ and $ \rho $, the parameters of interest between growth (Eq. \ref{dmdt_juvenile} and \ref{dmdt_mature}) and reproductive output (Eq. \ref{reproductive_output}).  $ c $ was bound between 0 and 0.4, which encapsulates the values measured within fish \parencite{Benoit2018, Roff1983, Fontoura2009}.  Though it has been shown to reach as much as 0.7 in some species \parencite{Parker2018}.  To search for any hyperallometry within reproduction, $ \rho $ was bound between 0 and 2.  
 	The simulation was then run at 0.01 value intervals in both $c$ and $\rho$ over a lifespan of one million days.  The results of each simulation were recorded and any non-viable results were discarded.  A result was considered non-viable if fish had ``shrunk" more than 5\% in order to accommodate reproductive costs.  Shrinking occurs in the model because  the combined loss of energy to metabolism and reproduction is too much for the simulated values at the mass achieved by maturation so the individual experiences a deficit of energy, which is paid by loss in mass until equilibrium is achieved. % \cite{VandenBerghe1992} for reproductive mass loss (though it is due to behaviour changes)
 	Shrinking is not expected at maturity in reality.  Typically, maturity will occur while the organism still has room for growth.  It is the onset of reproduction which is considered to slow or stop growth % this is the case where the metabolic exponent is the same or less than the intake one.
 	 (see Fig. \ref{OGM_Curve}).  Shrinking can be thought of as starvation in a real organism.  If energetic cost are not met then energy reserves in the body, such as fat and muscle, are broken down for energy.  It has been shown that some fish are capable of losing up to 10\% of their body mass \parencite{VandenBerghe1992}.  However, this was during the breeding season and caused by behavioural changes due to parenting.  Additionally, individuals were shown to rebound back to their``normal" body mass once the breeding season had ended.
@@ -436,6 +399,8 @@ url=false, isbn=false]{biblatex}
 	% Emphasis that this is applicable to more than just fish - What needs to be done to apply the model to other animal groups.
 	In conclusion, the model presented in this study is a promising base which can be expanded upon in a way that was not possible with previous OGMs allowing for much more controlled and detailed explanations of the factors controlling growth.  In contrast to all previous work, which assume optimal supply, the concept of varying supply is addressed using functional responses.  Additionally, qualitative evidence is provided supporting hyperallometric scaling in fish using energy budget as the basis.  The model can easily be applied to any animal taxon, not just fish, with some simple changes.  Additionally, there are clear directions to be explored to improve the model's accuracy.
 	
+	%TODO make sure that i mention that the increasing evidence for hyperallometric scaling in fish means that there is need to reconsider the stance of fishing mainly large fish and leaving behind the small ones.
+	% TODO make sure that I spin the resources into conservation or management if possible?
 	
 	
 	
@@ -476,12 +441,12 @@ url=false, isbn=false]{biblatex}
 
 
 	%%%%%%%%%% Conclusion %%%%%%%%%%
-\section{Conclusion}
-	\linenumbers
-	
-	
-	
-	\nolinenumbers
+%\section{Conclusion}
+%	\linenumbers
+%	
+%	
+%	
+%	\nolinenumbers
 	
 	%%%%%%%%%% Data Declaration %%%%%%%%%%
 	\textbf{Code and Data Availability}
