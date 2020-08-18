@@ -79,8 +79,14 @@ url=false, isbn=false]{biblatex}
 	%%%%%%%%%% Introduction %%%%%%%%%%
 \section{Introduction}
 	\linenumbers
-	% putting OG first
-	Growth is a gateway to understanding how many biological rates change throughout ontogeny.  This is because so many biological rates scale with mass \parencite{Kleiber1932}.  To date many models have been developed to predict and describe the growth of an organism throughout its lifetime.  The three main approaches used are the von Bertalanffy model, the dynamic energy budget (DEB) model and the ontogenetic growth model (OGM), which will be the focus of this study \parencite{Putter1918, vonBertalanffy1938, Kooijman1986, West2001}.  All of these are energetic based models with varying assumptions, key among which is the scaling of resource supply and metabolic rate with mass.   In OGMs supply is thought of as being optimal at all times which leads to the assumption that intake scales to the power of 0.75.  Indeed while under optimal conditions this may be true, however, it neglects that this situation is thought to rarely occur in the field \parencite{Pawar2012}.
+%	TODO Include Diego's references
+
+	%Ease into it a bit first
+	Body mass plays a role in determining many biological factors.  For example. larger males are more competitive for mates in many species.  Larger individuals are less vulnerable to predation, have lower mass specific metabolic rates and produce more offspring in their lifetime \parencite{Peters1983, Barneche2018, Craig2006, Magnhagen2001, Hixon2014, Marshall2006}.
+	% growth, what we do and don't know.
+	By extension knowing how body mass changes over an organisms lifetime is the gateway to understanding how many biological rates change throughout ontogeny.  This is because so many biological rates scale with mass \parencite{Kleiber1932}.  Despite its importance, relatively little is know about the factors determining growth trajectories \parencite{Arendt2011, Marshall2019}.\\
+	% introduction of models
+	To date many models have been developed to predict and describe the growth of an organism throughout its lifetime.  The three main approaches used are the von Bertalanffy model, the dynamic energy budget (DEB) model and the ontogenetic growth model (OGM), which will be the focus of this study \parencite{Putter1918, vonBertalanffy1938, Kooijman1986, West2001}.  All of these are energetic based models with varying assumptions, key among which is the scaling of resource supply and metabolic rate with mass.   In OGMs supply is thought of as being optimal at all times which leads to the assumption that intake scales with mass to the power of 0.75.  Indeed while under optimal conditions this may be true, it neglects that this situation is thought to rarely occur in the field \parencite{Pawar2012}.
 %	Additionally, growth model approaches have made various assumptions about the scaling of metabolic rates.  OGMs assume that scaling is isometric with mass, i.e. scaling exponent is 1.  This is contrary to what has been thought 
 	This study takes the novel approach of using a mass-specific functional response and assimilation efficiency to describe how intake changes both throughout ontogeny and varying levels of resource availability. While the methodology used here can be used for any animal taxon, in order to investigate growth, a taxon much be chosen to parameterise metabolic rate around.  This study will focus on fish.
 		
@@ -142,6 +148,13 @@ url=false, isbn=false]{biblatex}
 	The issue of non-optimal feeding is addressed somewhat by \citeauthor{Hou2011} (\citeyear{Hou2011}).  However, this growth was only investigated as, essentially, a proportion of optimal consumption and does not address a potential change in scaling of intake rate.
 	Another limitation of the models used in previous OGMs is the dependence on asymptotic mass.  The models are entirely dependent on the value of optimal intake and asymptotic mass.  All other values, such as metabolic cost, are then derived in relation to these.  However, organisms are not born with some inherent restriction to the size they can attain, at least not energetically.  If there is surplus energy for a given mass the organism should be able to grow.  Relying on asymptotic mass to define the upper bound of attainable mass does not allow for investigation of the mechanisms that underpin asymptotic size in reality. 
 	
+	
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=\linewidth]{../../results/scalingplot.pdf}
+		\caption{a) shows how maintenance cost outscales supply in a traditional OGM.  Growth only stops when maintenance reaches the supply line  b) shows scaling for supply and maintenance as equal. Since scaling is equal growth will never stop until the new cost of reproduction is introduced some time during development.  Blue line is supply, orange line is maintenance, green dotted line is reproduction}
+		\label{scaling_plot}
+	\end{figure}
 	% talk about how we assume that evolution settles upon values which optimise for reproduction -- can do this when talking about charnov?
 	
 	% Justify and appeal my methods	
@@ -163,7 +176,7 @@ url=false, isbn=false]{biblatex}
 \section{Methods}
 	\linenumbers
 	
-	\subsection{Altering OGMs to account for resource supply}
+	\subsection{Altering OGMs to Account for Resource Supply}
 	In order to address the issue of supply in the context of an OGM, which can be generically described as $dm/dt = gain - loss$, some changes need to be made to the model's terms.  The first is to remove the assumption of asymptotic mass and the reliance of cost upon it.  Within a tradional OGM the gain term ($ a $) and asymptotic mass are used to define the metabolic cost ($ b $).  However, since the assumption of perfect intake is going to be broken, because of the variable supply, this relationship no longer holds.  As such, both intake and metabolic cost need to be redefined.  Additionally, in light of recent work showing that reproduction scales allometrically and not isometrically, the reproductive cost must also be modified from the form used by \citeauthor{Charnov2001} (\citeyear{Charnov2001}) \parencite{Marshall2019, Barneche2018} %TODO check marshal ref data origin
 	
 	
@@ -297,7 +310,7 @@ url=false, isbn=false]{biblatex}
 	However, as can be seen in Fig. \ref{fig:sensmaturationtimeshortexp075}, where maturation is occurring early during the growth phase, hyperallotric scaling emerges.  This pattern shows in particular at lower resource densities in 3D (Fig. \ref{fig:sensverylowresourcesmaturationtimeshortexp075} and \ref{fig:sensverylowresourcesmaturationtimeshortexp1})
 	
 	
-	\subsection{Effect of Parameters}
+	\subsection{Sensitivity Analysis}
 	\subsubsection{Resource Density}
 	The scaling relationship emerges as would be expected from the scaling of the functional response.  At low resource densities the output of the functional response will scale similarly to search rate.  The scaling of which is higher in 3D as resources increase and the response shifts to scaling similarly to the inverse of handling time.  At this point $\rho$ starts to take values which are higher in 2D than 3D, because of the higher normalisation constant in 2D.
 	
@@ -427,12 +440,7 @@ url=false, isbn=false]{biblatex}
 	
 	
 	
-	\begin{figure}
-		\centering
-		\includegraphics[width=\linewidth]{../../results/scalingplot.pdf}
-		\caption{a) shows how maintenance cost outscales supply in a traditional OGM.  Growth only stops when maintenance reaches the supply line  b) shows scaling for supply and maintenance as equal. Since scaling is equal growth will never stop until the new cost of reproduction is introduced some time during development.  Blue line is supply, orange line is maintenance, green dotted line is reproduction}
-		\label{scaling_plot}
-	\end{figure}
+
 %	\subsection{planned outline}
 %	Overall summary of results and their meaning.
 %	\\- I show that hyper allometry is possible within fish.  
