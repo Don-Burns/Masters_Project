@@ -10,6 +10,7 @@
 \usepackage{float}
 \usepackage[mathlines]{lineno}%line numbers
 \usepackage{textcomp} % for degree symbol
+\usepackage{ragged2e}
 %biblatex
 %			compiler		style				max intext names	maxinbib names  
 \usepackage[backend=biber, style=authoryear-comp, maxcitenames=2, maxbibnames=10,
@@ -22,7 +23,7 @@ url=false, isbn=false]{biblatex}
 \usepackage{hyperref} % for URLs
 \usepackage[table, dvipsnames]{xcolor}
 %%%%%%%%%% Custome Commands %%%%%%%%%%
-\newcommand{\crest}{\includegraphics[width = 4cm, keepaspectratio]{../images/IC_Crest.eps}} % Imperial crest
+%\newcommand{\crest}{\includegraphics[width = 4cm, keepaspectratio]{../images/IC_Crest.eps}} % Imperial crest
 \newcommand\wordcount{\input{Burns_Donal_CMEE_MSc_2020.sum}} % to include word count 
 
 %%%%%%%%%% Formatting %%%%%%%%%%
@@ -56,7 +57,7 @@ url=false, isbn=false]{biblatex}
 	\section*{Abstract}
 	\linenumbers
 %	Size is essential to reproductive output. By extension understanding growth, determines size allows understanding of reproductive output. 
-	 
+	%TODO adjust based on samraat's feedback
 	With recent results showing that reproduction in fish scales hyperallometrically there is a need to update growth OGMs to reflect this fact.  Current OGMs assume optimal intake, an assumption which is not always reflected in the field.  In this study I develop an energy intake focused approach to explaining growth, an area which has not been covered within current literature, and shows that hyperallometric scaling of reproductive output arises when allowing for variable reproductive scaling and maximising for fitness.  The model is applicable to not only fish, but any animals taxon with some simple parameter adjustments.  I offer direction for improvements and areas to be developed in order to allow the model to be applicable to any temperature range.
 	\vspace*{0.5 cm}
 	\newline
@@ -116,7 +117,7 @@ url=false, isbn=false]{biblatex}
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=\linewidth]{../../results/scalingplot.pdf}
-		\caption{a) shows how maintenance cost out-scales supply in a traditional OGM.  Growth only stops when maintenance (scaling exponent = 1) reaches the supply line (scaling exponent = 0.75)  b) shows scaling for supply and maintenance as equal. Since scaling is equal growth will never stop until the new cost of reproduction is introduced some time during development.  Blue line is supply, orange line is maintenance, green dotted line is reproduction}
+		\caption{The effect of rate scaling exponents can be visualised within log space.  The slope of the line is determined by the exponent.  a) shows how maintenance cost out-scales supply in a traditional OGM.  Growth only stops when maintenance (scaling exponent = 1) reaches the supply line (scaling exponent = 0.75)  b) shows scaling for supply and maintenance as equal. Since scaling is equal growth will never stop until the new cost of reproduction is introduced some time during development.  Blue line is supply, orange line is maintenance, green dotted line is reproduction}
 		\label{scaling_plot}
 	\end{figure}
 	With two of the key assumptions of current OGMs, that reproduction and metabolism scale isometrically, not holding in the field \parencite{Barneche2018, Pawar2012, Peters1983} there is a need to take an unexplored approach to modelling fish growth.  This study focuses on developing how intake is described so as to better reflect the real world.  To achieve this, a natural starting point is to model intake as a functional response \parencite{Holling1959} so as to better reflect real world intake rates in terms of consumed biomass over time.  Non-optimal supply is a currently unexplored area within growth modelling.  This is likely due to the difficulty of directly measuring intake, especially in the field. Perhaps as a result, comparatively less is known about consumption.  This necessitates the use of proxy values to estimate intake, for example nutrient flux \parencite{Schiettekatte2020}, or drawing broad relationships to approximate consumption, as this study will do.
@@ -230,7 +231,8 @@ url=false, isbn=false]{biblatex}
 			\caption{Table describing parameters used in the model, along with values, units and sources where applicable.  The units of resource density change depending on the dimension of intake.  $m^D$ represent either $m^2$ in 2D or $m^3$ in 3D} 
 			\label{parameters}
 			\vspace{2mm}
-			\begin{tabular}{c p{3.6cm} l l l p{3cm}}
+			{\RaggedRight %to allign text left  
+			\begin{tabular}{c p{3.9cm} l l l p{3cm}}
 				\hline
 				Parameter 	& Description 			& Value 	& Units 	& Range 		& Source \\
 				\hline
@@ -255,6 +257,7 @@ url=false, isbn=false]{biblatex}
 				&						& $10^{3.04}$ (3D)			&kg$^{1-\beta}$ s\\
 				\hline
 			\end{tabular}
+		}%end of \RaggedRight
 		\end{table}
 	\end{centering}
 
@@ -269,16 +272,50 @@ url=false, isbn=false]{biblatex}
 %		scenesence not much of a factor
 % 10 \% predicted under Roff 1983
 
-	\subsection{Growth Curve and Maturation Time}
-	% talking about at meta_exp = 1
-	As can be seen in Figure \ref{growth_curve}, growth is very fast within the model.  Asymptotic mass is reached by $\sim$15 days.  This makes interpreting any results regarding maturation time difficult % TODO < rephrase
-	because any time after $\sim$15 days produces the same result (see Fig. \ref{fig:senslowresourcesmaturationtimeshortexp1} - \ref{fig:senshighresourcesmaturationtimeshortexp1}).
-	However, as can be seen in Fig. \ref{fig:sensmaturationtimeshortexp075}, where maturation is occurring early during the growth phase, hyperallotric scaling emerges.  This pattern shows in particular at lower resource densities in 3D (Fig. \ref{fig:sensverylowresourcesmaturationtimeshortexp075} and \ref{fig:sensverylowresourcesmaturationtimeshortexp1})
+	\subsection{Growth and Maturation}
+	In 3D, when the metabolic scaling exponent ($ \mu $) is 1, hyperallometry emerges in reproduction, i.e. $ \rho > 1 $, at low resources (Fig. \ref{resources2D3D_meta_exp1} b).  When resources are high, the value of $ \rho $ is lowered (Fig. \ref{resources2D3D_meta_exp1} d).  This emerges because consumption rate scaling is higher at lower resources in 3D (see Table \ref{parameters}) which allows for steeper scaling within reproduction.  This same pattern occurs within 3D for $ \mu = 0.75$ (\ref{resources2D3D_meta_exp0.75}).  
+	\\
+	In 2D, the opposite pattern is seen for $ \mu = 0.75 $, with $ \rho $ at low resources lower than at saturated resources (\ref{resources2D3D_meta_exp0.75} a, c).  This can again be explained by the difference within supply scaling at high vs. low resources in 2D.  Since supply scaling is higher at high resources at low resources in 2D.  However, when $ \mu = 1 $ in 2D, this pattern is reversed (Fig. \ref{resources2D3D_meta_exp1} a, c).  This may be caused by the very small amount of reproduction occurring at low resources, but if this were the case, the same pattern would be expected to be seen for $ \mu = 0.75 $, which is not the case.  As resources increase, but still remain low, $ \rho $ does drop below that of the value at high resources, before climbing back up.  However, the signal is not very clean (see Fig. \ref{fig:sensresourcedensityexp1broad} and \ref{fig:sensresourcedensityexp1fine})
 	
+	
+%	% talking about at meta_exp = 1
+%	As can be seen in Figure \ref{growth_curve}, growth is very fast within the model.  Asymptotic mass is reached by $\sim$15 days.  This makes interpreting any results regarding maturation time difficult % TODO < rephrase
+%	because any time after $\sim$15 days produces the same result (see Fig. \ref{fig:senslowresourcesmaturationtimeshortexp1} - \ref{fig:senshighresourcesmaturationtimeshortexp1}).
+%	However, as can be seen in Fig. \ref{fig:sensmaturationtimeshortexp075}, where maturation is occurring early during the growth phase, hyperallotric scaling emerges.  This pattern shows in particular at lower resource densities in 3D (Fig. \ref{fig:sensverylowresourcesmaturationtimeshortexp075} and \ref{fig:sensverylowresourcesmaturationtimeshortexp1})
+
+		\begin{figure}[H]
+		% TODO increase size of rho and c labels in both plots
+		\centering
+		\includegraphics[width=0.6\textwidth]{../../results/report_3D2D_HighLowResCLEAN_meta_exp_1.pdf}
+		
+		\caption{Metabolic exponent of 1 in 2D vs 3D at high and low resource densities. The optimal value is denoted by the blue circle.
+			The resources used for the low resource scenario (top row) is the minimum amount of resources that allows growth with a $c$ and $\rho$ of 0.01.  As would be expected, since has 3D steeper scaling, it allows for growth at smaller resource densities than 2D.
+			Low reources in 2D were $ \approx 0.11$kg/m$^2 $ and $ 0.00035$kg/m$^3 $ in 3D.
+			$ 100$kg/m$^D $, where $D$ is dependent on dimension, was used for high resources because, which although unrealistic, ensures that resources are not a limiting factor in the simulations.
+			Hyperallometric scaling is observed in 2D at high (c) and low resources(a).
+			Scaling in 3D is hyperallometric at low resources (b) and hypoallometric at high resources (d).
+			Intensity of colour is determined by reproductive output in kg/s.}
+		\label{resources2D3D_meta_exp1}
+	\end{figure}
+	% TODO should I round the 3d min val in some way? change units to grams?
+	\begin{figure}[H]
+		
+		
+		\centering
+		\includegraphics[width=0.6\textwidth]{../../results/report_3D2D_HighLowResCLEAN_meta_exp_075.pdf}
+		
+		\caption{Metabolic exponent of 0.75 in 2D vs 3D at high and low resource densities. The optimal value is denoted by the blue circle.
+			The resources used for the low resource scenario (top row) is the minimum amount of resources that allows growth with a $c$ and $\rho$ of 0.01.  As would be expected, since has 3D steeper scaling, it allows for growth at smaller resource densities than 2D.
+			Low reources in 2D were $ \approx 0.11$kg/m$^2 $ (a) and $ 0.00035$kg/m$^3 $ in 3D (b).
+			$ 100$kg/m$^D $, where $D$ is dependent on dimension, was used for high resources because, which although unrealistic, ensures that resources are not a limiting factor in the simulations (c, d).
+			Hypoallometric scaling is observed in all cases.
+			Intensity of colour is determined by reproductive output in kg/s.}
+		\label{resources2D3D_meta_exp0.75}
+	\end{figure}
 	
 	\subsection{Sensitivity Analysis}
 	\subsubsection{Resource Density}
-	The scaling relationship emerges as would be expected from the scaling of the functional response.  At low resource densities the output of the functional response will scale similarly to search rate.  The scaling of which is higher in 3D as resources increase and the response shifts to scaling similarly to the inverse of handling time.  At this point $\rho$ starts to take values which are higher in 2D than 3D, because of the higher normalisation constant in 2D.
+	The scaling relationship of $\rho$ emerges as would be expected from the scaling of the functional response.  At low resource densities the output of the functional response will scale similarly to search rate.  The scaling of which is higher in 3D (see Table \ref{parameters}), as resources increase and the response shifts to scaling similarly to the inverse of handling time.  At this point $\rho$ starts to take values which are higher in 2D than 3D, because of the higher normalisation constant in 2D.
 	
 	\begin{figure}[h]
 		\centering
@@ -289,59 +326,22 @@ url=false, isbn=false]{biblatex}
 
 	\subsubsection{Metabolic Exponent}
 	% talking about at meta_exp = 1
-	The expected result is for increasing values of metabolic scaling exponent ($\mu$) for $\rho$ to also increase.  This is because the lower values of $\mu$ will result in there being a larger gap between the scaling of intake and maintenance, which allows for steeper scaling in reproduction (see Fig. \ref{scaling_plot} b) \parencite{Marshall2019}.  This appears to be the case when analysing $\rho$ with respect to the other parameters where $\mu = 1$ or 0.75 (e.g. Fig. \ref{fig:senshighresourcesmaturationtimeshortexp1} and \ref{fig:sensmaturationtimeshortexp075} or Fig. \ref{fig:sensresourcedensityexp1broad} and \ref{fig:sensresourcedensityexp075fine}).  However, when $\mu$ is explicitly simulated over a variety of values, the trend suggests that increasing $\mu$ allows for higher values of $\rho$.  
-	
+	The expected result is for increasing values of $\mu$ for $\rho$ to also increase.  This is because the lower values of $\mu$ will result in there being a larger gap between the scaling of intake and maintenance, which allows for steeper scaling in reproduction (see Fig. \ref{scaling_plot} b) \parencite{Marshall2019}.  
+%	This appears to be the case when analysing $\rho$ with respect to the other parameters where $\mu = 1$ or 0.75 (e.g. Fig. \ref{fig:senshighresourcesmaturationtimeshortexp1} and \ref{fig:sensmaturationtimeshortexp075} or Fig. \ref{fig:sensresourcedensityexp1broad} and \ref{fig:sensresourcedensityexp075fine}).  
+	However, the trend suggests that increasing $\mu$ allows for higher values of $\rho$.  
+		
+	\subsubsection{$c$ Values}
+	Estimations of $c$ are low in some cases, especially in 2D (for example Fig. \ref{fig:senslowresourcesmaturationtimeshortexp1} and Fig. \ref{fig:senslowresourcesshrinkexp075}).  While this may be low compared to the $\sim$10\% - 35\% expected \parencite{Benoit2018, Fontoura2009, Roff1983, Wootton1985} it is not unprecedented for values of 2\% to be observed in some fish \parencite{Gunderson1997}.  
+	It may be necessary for the lower bounds of $c$ to be adjusted based on what is expected or even viable in the organisms being simulated.
+		
 	\subsubsection{Shrinking}
 	% talking about at meta_exp = 1
 	At saturated resource densities, allowing for greater proportions of shrinking enables $\rho$ to be set to larger values in both dimensions.  This is perhaps not surprising as increasing the shrinking proportion allows for a larger reproductive cost since all individuals will already be at asymptotic mass at time of maturation.
-	
-	\subsubsection{$c$ Values}
-	Estimations of $c$ are low in many cases, especially in 2D.  While this may be low compared to the $\sim$10\% - 35\% expected \parencite{Benoit2018, Fontoura2009, Roff1983} it is not unprecedented for values of 2\% to be observed in some fish \parencite{Gunderson1997}.  It may be necessary for the lower bounds of $c$ to be adjusted based on what is expected or even viable in the organisms being simulated.
-	
+	\\
+	At low resources, the amount of shrinking allowed does not affect $ \rho $ or $ c $ values \ref{label}
+	%TODO finish off here
 
-	\begin{figure}[h!]
-				
-		\centering
-		\includegraphics[width=0.5\textwidth]{../../results/report_3D2D_HighLowResCLEAN_meta_exp_1.pdf}
-		
-		\caption{Metabolic exponent of 1 in 2D vs 3D at high and low resource densities. The optimal value is denoted by the blue circle.
-			The resources used for the low resource scenario (top row) is the minimum amount of resources that allows growth with a $c$ and $\rho$ of 0.01.  As would be expected, since has 3D steeper scaling, it allows for growth at smaller resource densities than 2D.
-			Low reources in 2D were $ \approx 0.11$kg/m$^2 $ and $ 0.00035$kg/m$^3 $ in 3D.
-			$ 100$kg/m$^D $, where $D$ is dependent on dimension, was used for high resources because, which although unrealistic, ensures that resources are not a limiting factor in the simulations.
-			Hyperallometric scaling is observed in 2D at high (c) and low resources(a).
-			Scaling in 3D is hyperallometric at low resources (b) and hypoallometric at high resources (d).}
-		\label{resources2D3D_meta_exp1}
-	\end{figure}
-
-	\begin{figure}[h!]
-		
-
-		\centering
-		\includegraphics[width=0.5\textwidth]{../../results/report_3D2D_HighLowResCLEAN_meta_exp_075.pdf}
-		
-		\caption{Multiplot with 2D vs 3D and varying resource densities. The optimal value is denoted by the blue circle.
-			The resources used for the low resource scenario (top row) is the minimum amount of resources that allows growth with a $c$ and $\rho$ of 0.01.  As would be expected, since has steeper scaling, 3D allows for growth at smaller resource densities than 2D.
-			Low reources in 2D were $ \approx 0.1kg/m^2 $ and $ 0.00035kg/m^2 $ in 3D.
-			$ 100kg/m^2 $ was used for high resources because, which although unrealistic, ensures that resources are not a limiting factor in the simulations.
-			Hyperallometric scaling is observed in 2D ($\rho = 1.64$ at high resources and 1.99 at low resources (NOTE: This is because 2 is the upper limit of $\rho$ I have simulated here). 
-			Scaling in 3D is slightly hypoallometric $rho = 0.94$ and c = 0.01 at high resources. $\rho = 0.8$ and $c = 0.01$ at low resources
-			The metabolic scaling exponent = 0.75 in all cases}
-		\label{resources2D3D_meta_exp0.75}
-	\end{figure}
 			
-	\begin{figure}
-		\centering %TODO Units for axis?
-		\includegraphics[width=\textwidth]{../../results/pretty_curve}
-		\caption{Example of the growth curve and cumulative reproduction expected from a traditional OGM model. Maturation occurs at 1000 days, after which growth is less steep until reaching asymptotic mass.  }
-		\label{OGM_Curve}
-	\end{figure}
-	
-	\begin{figure}
-		
-		\includegraphics[width=\textwidth]{../../results/report_growth_curve.pdf}
-		\caption{The growth over a fish which consumes in 2D.  Maturation occurs at 5 years (1825 days).  The fish was allowed to shrink by 5\% at the onset of reproduction.}
-		\label{growth_curve}
-	\end{figure}
 
 
 
@@ -396,7 +396,8 @@ url=false, isbn=false]{biblatex}
 
 	\nolinenumbers
 
-
+%TODO make sure all SI is mentioned in the text
+%TODO order of SI plots
 	%%%%%%%%%% Conclusion %%%%%%%%%%
 %\section{Conclusion}
 %	\linenumbers
