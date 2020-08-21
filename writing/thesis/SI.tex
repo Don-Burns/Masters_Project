@@ -6,8 +6,11 @@
 	\renewcommand{\thetable}{S\arabic{table}}%
 	\setcounter{figure}{0}
 	\renewcommand{\thefigure}{S\arabic{figure}}%
+	\setcounter{equation}{0}
+	\renewcommand{\theequation}{S\arabic{equation}}
 }
 
+\begin{refsection} % for seperate bibliography to main text
 \section*{Supplementary Information}
 \beginsupplement
 
@@ -17,7 +20,23 @@
 %move any unreferenced sensitivity analyses here.
 
 %\subsection{Figures}
-
+\subsection{Unit Conversions}
+\subsubsection{Functional Response ($ f(\cdot) $)}
+	\begin{align}
+		\label{Fr_Conversion}
+		kg \cdot s^{-1} \cdot 24 \cdot 60 \cdot 60 &= kg \cdot d{-1}
+	\end{align}
+	
+\subsubsection{Metabolic Cost ($ B_m $)}
+	Conversion factor for joules to kg wet mass from \citeauthor{weathers2012fundamentals} (\citeyear{weathers2012fundamentals}).
+	\begin{align}
+		\begin{split}
+			\label{Bm_Conversion}
+			J \cdot s^{-1} \cdot 24 \cdot 60 \cdot 60 &= J \cdot d{-1}\\
+			J \cdot d{-1} \cdot 2.5 \times 10^{-4} &= kg \cdot d{-1}
+		\end{split}
+	\end{align}
+	
 \subsection{Growth Curves}
 %TODO ensure these are mentioned in the text
 	\begin{figure}[H]
@@ -35,6 +54,7 @@
 \end{figure}
 
 \clearpage
+\subsection{Sensitivity Analysis}
 \subsubsection{Maturation Time}
 \begin{figure}[H]
 	\centering
@@ -163,3 +183,6 @@
 	\label{fig:sensverylowresourcesshrinkexp075}
 \end{figure}
 
+\clearpage
+	\printbibliography
+\end{refsection}
