@@ -23,7 +23,7 @@
 \subsubsection{Functional Response ($ f(\cdot) $)}
 	\begin{align}
 		\label{Fr_Conversion}
-		kg \cdot s^{-1} \cdot 24 \cdot 60 \cdot 60 &= kg \cdot d{-1}
+		kg \cdot s^{-1} \cdot 24 \cdot 60 \cdot 60 &= kg \cdot d^{-1}
 	\end{align}
 	
 \subsubsection{Metabolic Cost ($ B_m $)}
@@ -31,24 +31,16 @@
 	\begin{align}
 		\begin{split}
 			\label{Bm_Conversion}
-			J \cdot s^{-1} \cdot 24 \cdot 60 \cdot 60 &= J \cdot d{-1}\\
-			J \cdot d{-1} \cdot 2.5 \times 10^{-4} &= kg \cdot d{-1}
+			J \cdot s^{-1} \cdot 24 \cdot 60 \cdot 60 &= J \cdot d^{-1}\\
+			J \cdot d^{-1} \cdot 2.5 \times 10^{-4} &= kg \cdot d^{-1}
 		\end{split}
 	\end{align}
 	
 \subsection{Growth Curves}
-%TODO ensure these are mentioned in the text
-	\begin{figure}[H]
-	\centering 
-	\includegraphics[width=0.7\textwidth]{../../results/pretty_curve}
-	\caption{Example of the growth curve and cumulative reproduction expected from a traditional OGM model. Maturation occurs at 1000 days, after which growth is less steep until reaching asymptotic mass.  }
-	\label{OGM_Curve}
-\end{figure}
-
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.7\textwidth]{../../results/report_growth_curve.pdf}
-	\caption{The growth over a fish which consumes in 2D.  Maturation occurs at 5 years (1825 days).  The fish was allowed to shrink by 5\% at the onset of reproduction.}
+	\caption{The growth of a fish which consumes in 2D.  Maturation occurs at 5 years (1825 days).  The fish was allowed to shrink by 5\% at the onset of reproduction.}
 	\label{growth_curve}
 \end{figure}
 
@@ -123,13 +115,13 @@
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{../../results/Sens_Resource_Density_exp1_broad}
-	\caption{Effect of resource density on $c$ and $\rho$ where $\mu = 1$.  Over larger values for resource density.  3D quickly saturates at this density, thus is a nearly straight horizontal line.  See Fig. \ref{fig:sensresourcedensityexp075fine} for detail at lower resource density.  Units are $kg/m^D$, where $D$ is the dimension.}
+	\caption{Effect of resource density on $c$ and $\rho$ where $\mu = 1$.  Resource densities range from 0 - 30 $kg/m^D$.  3D quickly saturates at this density, thus is a nearly straight horizontal line.  See Fig. \ref{fig:sensresourcedensityexp075fine} for detail at lower resource density.  Units are $kg/m^D$, where $D$ is the dimension.}
 	\label{fig:sensresourcedensityexp1broad}
 \end{figure}
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=\linewidth]{../../results/Sens_Resource_Density_exp075_broad}
-	\caption{Effect of resource density on $c$ and $\rho$ where $\mu = 0.75$.  Over larger values for resource density.  There is a lot of numeric instability across resource densities, but the trend appears to be somewhat stable around $\sim$0.8 in 2D and $\sim$0.53 in 3D See Fig. \ref{fig:sensresourcedensityexp075fine} for detail at lower resource density.  Units are $kg/m^D$, where $D$ is the dimension.}
+	\caption{Effect of resource density on $c$ and $\rho$ where $\mu = 0.75$.  Resource densities range from 0 - 30 $kg/m^D$.  There is a lot of numeric instability across resource densities, but the trend appears to be somewhat stable around $\sim$0.8 in 2D and $\sim$0.53 in 3D See Fig. \ref{fig:sensresourcedensityexp075fine} for detail at lower resource density.  Units are $kg/m^D$, where $D$ is the dimension.}
 	\label{fig:sensresourcedensityexp075broad}
 \end{figure}
 	\begin{figure}[h!]
