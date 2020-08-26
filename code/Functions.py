@@ -418,7 +418,7 @@ def dmdt(mR0, t,
         float: change in mass (dm/dt) at time t
     """
     # ensure dimensionality is correct for norm_const
-    norm_const = epsilon * Fun_Resp(1, 10**6, dimensionality) *60*60*24
+    norm_const = 1#epsilon * Fun_Resp(1, 10**6, dimensionality) *60*60*24
 
     # check if individual is at/past maturation
     m, R = mR0
@@ -667,11 +667,11 @@ def find_optimum(c_vec, rho_vec, m0, R0, time, params, shrinkage = 0):
                                             R0, time, params, shrinkage=shrinkage)
     # find optimum values
     # max_ind = where(repro_result_array == amax(repro_result_array))
-    max_ind = find_max(repro_array) 
+    max_ind = find_max(repro_result_array) 
     # max_repro = repro_result_array[max_ind] # unneccessary call
     i, j = max_ind
-    c_opt = c_vec[j]
-    rho_opt = rho_vec[i]
+    c_opt = c_vec[j][0]
+    rho_opt = rho_vec[i][0]
 
     return array([c_opt, rho_opt])
 
